@@ -1,0 +1,364 @@
+/* Theming */
+:root {
+  --accent-start: #3b82f6; /* blue-500 */
+  --accent-end: #8b5cf6; /* violet-500 */
+  --text: #0f172a;
+  --muted: #6b7280;
+  --card-bg: #ffffff;
+  --page-bg: #ffffff; /* white theme */
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--page-bg);
+  color: var(--text);
+}
+
+/* Layout */
+.container {
+  max-width: 1100px;
+  margin: 16px auto;
+  padding: 0 12px;
+}
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+.grid {
+  display: grid;
+  gap: 10px;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+}
+.col-12 {
+  grid-column: span 12;
+}
+.col-6 {
+  grid-column: span 12;
+}
+.col-4 {
+  grid-column: span 12;
+}
+@media (min-width: 900px) {
+  .col-6 {
+    grid-column: span 6;
+  }
+  .col-4 {
+    grid-column: span 4;
+  }
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0;
+}
+.muted {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Navbar */
+.navbar {
+  max-width: 1100px;
+  margin: 14px auto 8px;
+  padding: 2px;
+  background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+  border-radius: 22px;
+  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.12);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #fff;
+  color: var(--text);
+  border-radius: 20px;
+  padding: 16px 18px;
+}
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+.nav-links {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.nav-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.nav-link {
+  color: #334155;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: background-color 0.16s ease, color 0.16s ease,
+    transform 0.12s ease;
+}
+.nav-link:hover {
+  background: rgba(59, 130, 246, 0.08);
+  color: #111827;
+  transform: translateY(-1px);
+}
+.nav-link.active {
+  background: rgba(99, 102, 241, 0.12);
+  color: #4f46e5;
+}
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+  background: #ffffff;
+  color: var(--text);
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+.btn {
+  background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  transition: transform 0.12s ease, box-shadow 0.16s ease, filter 0.12s ease;
+}
+.btn:hover {
+  filter: brightness(1.03);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.28);
+}
+a.btn {
+  color: #fff;
+}
+.btn-danger {
+  background: #b91c1c;
+  color: #fff;
+}
+.btn-secondary {
+  background: #475569;
+  color: #fff;
+}
+.btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Accent cards */
+.accent-blue {
+  border-left: 4px solid #2563eb;
+}
+.accent-emerald {
+  border-left: 4px solid #10b981;
+}
+.accent-amber {
+  border-left: 4px solid #f59e0b;
+}
+.accent-rose {
+  border-left: 4px solid #f43f5e;
+}
+.accent-purple {
+  border-left: 4px solid #8b5cf6;
+}
+.accent-blue.soft-section {
+  background: #f0f7ff;
+}
+.accent-emerald.soft-section {
+  background: #f0fdf4;
+}
+.accent-amber.soft-section {
+  background: #fffbeb;
+}
+.accent-rose.soft-section {
+  background: #fdf2f8;
+}
+.accent-purple.soft-section {
+  background: #f5f3ff;
+}
+
+/* Pills & errors */
+.error {
+  color: #b91c1c;
+  margin-top: 6px;
+}
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  margin-left: 8px;
+  font-size: 12px;
+}
+.pill.high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.pill.medium {
+  background: #ffedd5;
+  color: #9a3412;
+}
+.pill.low {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-family: inherit;
+}
+.form-narrow {
+  max-width: 520px;
+}
+.form-narrow form,
+.form-narrow input,
+.form-narrow textarea,
+.form-narrow select {
+  width: 100%;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Lists */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.list .item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+.list .item:last-child {
+  border-bottom: none;
+}
+
+@media (min-width: 800px) {
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Heatmap base */
+.react-calendar-heatmap rect {
+  width: 8px;
+  height: 8px; /* rounded squares */
+  rx: 3;
+  ry: 3;
+}
+.react-calendar-heatmap .hc-0 {
+  fill: #e5e7eb;
+}
+.react-calendar-heatmap .hc-1 {
+  fill: #bbf7d0;
+}
+.react-calendar-heatmap .hc-2 {
+  fill: #86efac;
+}
+.react-calendar-heatmap .hc-3 {
+  fill: #34d399;
+}
+.react-calendar-heatmap .hc-4 {
+  fill: #10b981;
+}
+.react-calendar-heatmap .hc {
+  transition: transform 0.12s ease;
+}
+.react-calendar-heatmap .hc:hover {
+  transform: scale(1.08);
+}
+/* Make heatmap stretch horizontally and look rectangular */
+.heatmap-sm {
+  max-width: 100%;
+}
+/* Extra small heatmap wrapper and cells */
+.heatmap-xs {
+  max-width: 100%;
+}
+.heatmap-xs .react-calendar-heatmap rect {
+  width: 7px;
+  height: 7px;
+  rx: 3;
+  ry: 3;
+}
+.heatmap-tiny {
+  max-height: 28px;
+  overflow: hidden;
+}
+.heatmap-tiny .react-calendar-heatmap rect {
+  width: 7px;
+  height: 7px;
+}
+
+/* Soft light sections for dashboard components */
+.soft-section {
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 10px 0;
+}
+
+/* Quote layout */
+.quote-box {
+  position: relative;
+  min-height: 64px;
+  padding-right: 120px;
+}
+.quote-next {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
