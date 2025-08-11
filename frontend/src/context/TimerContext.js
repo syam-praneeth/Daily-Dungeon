@@ -7,11 +7,17 @@ export const TimerProvider = ({ children }) => {
   const [readingToday, setReadingToday] = useState(0);
   const [sessionsToday, setSessionsToday] = useState([]);
   const [streak, setStreak] = useState([]);
+  const [timerError, setTimerError] = useState("");
 
   const fetchToday = async () => {
-    const res = await axios.get("/readingSessions/today");
-    setReadingToday(res.data.timeSpent || 0);
-    setSessionsToday(res.data.sessions || []);
+    try {
+      const res = await axios.get("/readingSessions/today");
+      setReadingToday(res.data.timeSpent || 0);
+      setSessionsToday(res.data.sessions || []);
+      setTimerError("");
+    } catch (e) {
+      setTimerError("Unable to load today's reading data.");
+    }
   };
 
   const createSession = async ({
@@ -20,19 +26,37 @@ export const TimerProvider = ({ children }) => {
     endTime,
     duration,
   }) => {
-    await axios.post("/readingSessions", {
-      sessionName,
-      startTime,
-      endTime,
-      duration,
-    });
-    await fetchToday();
-    await fetchStreak();
+    try {
+      await axios.post("/readingSessions", {
+        sessionName,
+        startTime,
+        endTime,
+        duration,
+      });
+      await fetchToday();
+      await fetchStreak();
+      setTimerError("");
+    } catch (e) {
+      setTimerError("Failed to save session.");
+    }
   };
 
   const fetchStreak = async () => {
-    const res = await axios.get("/readingSessions/streak");
-    setStreak(res.data || []);
+    try {
+      const res = await axios.get("/readingSessions/streak");
+      setStreak(res.data || []);
+      setTimerError("");
+    } catch (e) {
+      // retry once after short delay on network error
+      await new Promise((r) => setTimeout(r, 400));
+      try {
+        const res2 = await axios.get("/readingSessions/streak");
+        setStreak(res2.data || []);
+        setTimerError("");
+      } catch (e2) {
+        setTimerError("Unable to load streak.");
+      }
+    }
   };
 
   return (
@@ -41,6 +65,7 @@ export const TimerProvider = ({ children }) => {
         readingToday,
         sessionsToday,
         streak,
+        timerError,
         fetchToday,
         createSession,
         fetchStreak,

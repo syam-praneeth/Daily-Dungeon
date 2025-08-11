@@ -1,13 +1,15 @@
 import React, { useContext, useEffect, useMemo } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import { TimerContext } from "../../context/TimerContext";
+import { AuthContext } from "../../context/AuthContext";
 import "react-calendar-heatmap/dist/styles.css";
 
 const ReadingHeatmap = () => {
-  const { streak, fetchStreak } = useContext(TimerContext);
+  const { streak, fetchStreak, timerError } = useContext(TimerContext);
+  const { token } = useContext(AuthContext);
   useEffect(() => {
-    fetchStreak();
-  }, []);
+    if (token) fetchStreak();
+  }, [token]);
   const values = streak.map((e) => ({
     date: (e.date || "").slice(0, 10),
     count: e.isActive ? 1 : 0,
@@ -71,13 +73,18 @@ const ReadingHeatmap = () => {
           <span title="Max Streak">🏆 {maxStreak}</span>
         </div>
       </div>
+      {timerError ? (
+        <div className="error" style={{ marginBottom: 8 }}>
+          {timerError}
+        </div>
+      ) : null}
       <CalendarHeatmap
         startDate={start}
         endDate={end}
         values={values}
         gutterSize={1}
         showWeekdayLabels={false}
-        showMonthLabels={false}
+        showMonthLabels={true}
         classForValue={(v) => {
           if (!v || !v.count) return "hc hc-0";
           // single level for active days; can be expanded to multiple levels if duration count added

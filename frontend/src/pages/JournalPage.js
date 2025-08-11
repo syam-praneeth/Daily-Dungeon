@@ -4,7 +4,7 @@ import JournalList from "../components/Journal/JournalList";
 import { JournalContext } from "../context/JournalContext";
 
 const JournalPage = () => {
-  const { journals } = useContext(JournalContext);
+  const { journals, journalError } = useContext(JournalContext);
   const [filter, setFilter] = useState("");
   const [filtered, setFiltered] = useState(journals);
 
@@ -17,9 +17,10 @@ const JournalPage = () => {
   return (
     <div className="container">
       <h2>Daily Journal</h2>
-      <div className="card">
+      <div className="soft-section accent-amber">
         <JournalForm />
       </div>
+      {journalError && <div className="error">{journalError}</div>}
       <div className="toolbar">
         <label>
           Filter by date{" "}
@@ -30,7 +31,7 @@ const JournalPage = () => {
           />
         </label>
       </div>
-      <div className="card">
+      <div className="soft-section accent-amber">
         <JournalList items={filtered} />
       </div>
     </div>

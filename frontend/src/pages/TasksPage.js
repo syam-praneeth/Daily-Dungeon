@@ -3,7 +3,8 @@ import { TaskContext } from "../context/TaskContext";
 import debounce from "lodash.debounce";
 
 const TasksPage = () => {
-  const { tasks, addTask, updateTask, deleteTask } = useContext(TaskContext);
+  const { tasks, addTask, updateTask, deleteTask, taskError } =
+    useContext(TaskContext);
   const [query, setQuery] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("");
   const [form, setForm] = useState({
@@ -54,7 +55,7 @@ const TasksPage = () => {
   return (
     <div className="container">
       <h2>Daily Tasks</h2>
-      <div className="card">
+      <div className="soft-section accent-blue">
         <form onSubmit={submit} className="grid">
           <input
             placeholder="Title"
@@ -115,9 +116,10 @@ const TasksPage = () => {
           <option value="Low">Low</option>
         </select>
       </div>
+      {taskError && <div className="error">{taskError}</div>}
 
       <div className="grid-2">
-        <div className="card">
+        <div className="soft-section accent-blue">
           <h3>Pending</h3>
           <ul>
             {pending.map((t) => (
@@ -145,7 +147,7 @@ const TasksPage = () => {
             ))}
           </ul>
         </div>
-        <div className="card">
+        <div className="soft-section accent-blue">
           <h3>Completed</h3>
           <ul>
             {completed.map((t) => (

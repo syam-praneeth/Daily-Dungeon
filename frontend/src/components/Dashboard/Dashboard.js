@@ -62,45 +62,73 @@ const Dashboard = () => {
               </div>
               <div>Journal entries: {dash.journal?.count || 0}</div>
             </div>
+            {dash.reading?.sessions?.length > 0 && (
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontWeight: 600, marginBottom: 6 }}>
+                  Todays Sessions
+                </div>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Session</th>
+                      <th className="text-right">Duration</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dash.reading.sessions.map((s) => (
+                      <tr key={s._id}>
+                        <td>{s.sessionName || "Reading"}</td>
+                        <td className="text-right">
+                          {Math.round((s.duration || 0) / 60)}m
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 
-        <div className="col-12 soft-section accent-emerald heatmap-xs heatmap-tiny">
+        <div
+          className="col-12 soft-section accent-emerald heatmap-xs heatmap-tiny"
+          style={{ marginBottom: 12 }}
+        >
           <ReadingHeatmap />
         </div>
 
-        <div className="col-6 soft-section accent-amber">
+        <div className="col-12 soft-section accent-amber">
           <TodayStats />
         </div>
-        <div className="col-6 soft-section accent-rose">
+        <div className="col-12 soft-section accent-rose">
           <TimetableOverview />
         </div>
 
-        <div className="col-6 soft-section accent-blue form-narrow">
+        <div className="col-12 soft-section accent-blue">
           <TaskForm />
         </div>
-        <div className="col-6 soft-section accent-blue">
+        <div className="col-12 soft-section accent-blue">
           <TaskList />
         </div>
 
-        <div className="col-6 soft-section accent-emerald form-narrow">
+        <div className="col-12 soft-section accent-emerald">
           <Timer />
         </div>
-        <div className="col-6 soft-section accent-emerald">
+        <div className="col-12 soft-section accent-emerald">
           {/* Reserved for recent sessions list or additional stats */}
         </div>
 
-        <div className="col-6 soft-section accent-amber form-narrow">
+        <div className="col-12 soft-section accent-amber">
           <JournalForm />
         </div>
-        <div className="col-6 soft-section accent-amber">
+        <div className="col-12 soft-section accent-amber">
           <JournalList />
         </div>
 
-        <div className="col-6 soft-section accent-purple form-narrow">
+        <div className="col-12 soft-section accent-purple">
           <TimetableForm />
         </div>
-        <div className="col-6 soft-section accent-purple">
+        <div className="col-12 soft-section accent-purple">
           <TimetableList />
         </div>
       </div>

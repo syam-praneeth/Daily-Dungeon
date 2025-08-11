@@ -4,14 +4,15 @@ import TimetableList from "../components/Timetable/TimetableList";
 import { TimetableContext } from "../context/TimetableContext";
 
 const TimetablePage = () => {
-  const { entries } = useContext(TimetableContext);
+  const { entries, timetableError } = useContext(TimetableContext);
   return (
     <div className="container">
       <h2>Timetable</h2>
-      <div className="card">
+      <div className="soft-section accent-purple">
         <TimetableForm />
       </div>
-      <div className="card">
+      {timetableError && <div className="error">{timetableError}</div>}
+      <div className="soft-section accent-purple">
         <TimetableList items={entries} />
       </div>
     </div>

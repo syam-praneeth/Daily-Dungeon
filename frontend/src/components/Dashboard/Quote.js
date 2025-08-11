@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { QuoteContext } from "../../context/QuoteContext";
 
 const Quote = () => {
-  const { quote, author, fetchRandomQuote, addQuote } =
+  const { quote, author, fetchRandomQuote, addQuote, nextLoading } =
     useContext(QuoteContext);
   const [text, setText] = useState("");
   const [formAuthor, setFormAuthor] = useState("");
@@ -20,8 +20,13 @@ const Quote = () => {
       <div className="quote-box" style={{ fontStyle: "italic", color: "#555" }}>
         <span>"{quote}"</span>
         {author ? <span> — {author}</span> : null}
-        <button className="btn quote-next" onClick={fetchRandomQuote}>
-          Next Quote
+        <button
+          className="btn quote-next"
+          onClick={fetchRandomQuote}
+          disabled={nextLoading}
+          aria-busy={nextLoading}
+        >
+          {nextLoading ? "Loading…" : "Next Quote"}
         </button>
       </div>
       <form onSubmit={submit} className="row" style={{ gap: 8, marginTop: 8 }}>

@@ -7,34 +7,62 @@ export const JournalContext = createContext();
 export const JournalProvider = ({ children }) => {
   const { token } = useContext(AuthContext);
   const [journals, setJournals] = useState([]);
+  const [journalError, setJournalError] = useState("");
 
   useEffect(() => {
     if (token) fetchJournals();
   }, [token]);
 
   const fetchJournals = async () => {
-    const res = await axios.get("/journals");
-    setJournals(res.data);
+    try {
+      const res = await axios.get("/journals");
+      setJournals(res.data);
+      setJournalError("");
+    } catch (e) {
+      setJournalError("Unable to load journals.");
+      setJournals([]);
+    }
   };
 
   const addJournal = async (journal) => {
-    const res = await axios.post("/journals", journal);
-    setJournals([res.data, ...journals]);
+    try {
+      const res = await axios.post("/journals", journal);
+      setJournals([res.data, ...journals]);
+      setJournalError("");
+    } catch (e) {
+      setJournalError("Failed to add journal.");
+    }
   };
 
   const updateJournal = async (id, updates) => {
-    const res = await axios.put(`/journals/${id}`, updates);
-    setJournals(journals.map((j) => (j._id === id ? res.data : j)));
+    try {
+      const res = await axios.put(`/journals/${id}`, updates);
+      setJournals(journals.map((j) => (j._id === id ? res.data : j)));
+      setJournalError("");
+    } catch (e) {
+      setJournalError("Failed to update journal.");
+    }
   };
 
   const deleteJournal = async (id) => {
-    await axios.delete(`/journals/${id}`);
-    setJournals(journals.filter((j) => j._id !== id));
+    try {
+      await axios.delete(`/journals/${id}`);
+      setJournals(journals.filter((j) => j._id !== id));
+      setJournalError("");
+    } catch (e) {
+      setJournalError("Failed to delete journal.");
+    }
   };
 
   return (
     <JournalContext.Provider
-      value={{ journals, addJournal, updateJournal, deleteJournal }}
+      value={{
+        journals,
+        addJournal,
+        updateJournal,
+        deleteJournal,
+        journalError,
+      }}
     >
       {children}
     </JournalContext.Provider>

@@ -4,7 +4,9 @@ import Timer from "../components/ReadingTimer/Timer";
 const TimerPage = () => (
   <div className="container">
     <h2>Reading Timer</h2>
-    <Timer />
+    <div className="soft-section accent-emerald">
+      <Timer />
+    </div>
   </div>
 );
 
