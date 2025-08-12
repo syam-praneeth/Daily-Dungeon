@@ -13,8 +13,8 @@ const TimetableList = ({ items }) => {
           style={{ justifyContent: "space-between" }}
         >
           <div>
-            <strong>{entry.day || entry.dayOfWeek}</strong> {entry.startTime}-
-            {entry.endTime}: {entry.subject || entry.activityName}
+            <strong>{entry.dayOfWeek || entry.day}</strong> {entry.startTime}-
+            {entry.endTime}: {entry.activityName || entry.subject}
           </div>
           <button className="btn-danger" onClick={() => deleteEntry(entry._id)}>
             Delete

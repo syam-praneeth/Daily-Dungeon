@@ -26,7 +26,12 @@ export const JournalProvider = ({ children }) => {
 
   const addJournal = async (journal) => {
     try {
-      const res = await axios.post("/journals", journal);
+      const payload = {
+        ...journal,
+        // ensure ISO string so backend Date parsing is consistent (IST chosen date @ 00:00 local becomes same calendar day)
+        date: new Date(journal.date).toISOString(),
+      };
+      const res = await axios.post("/journals", payload);
       setJournals([res.data, ...journals]);
       setJournalError("");
     } catch (e) {

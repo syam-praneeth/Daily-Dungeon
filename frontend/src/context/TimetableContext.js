@@ -26,7 +26,14 @@ export const TimetableProvider = ({ children }) => {
 
   const addEntry = async (entry) => {
     try {
-      const res = await axios.post("/timetable", entry);
+      const payload = {
+        ...entry,
+        dayOfWeek: entry.dayOfWeek || entry.day,
+        activityName: entry.activityName || entry.subject,
+      };
+      delete payload.day; // normalize
+      delete payload.subject;
+      const res = await axios.post("/timetable", payload);
       setEntries([...entries, res.data]);
       setTimetableError("");
     } catch (e) {
@@ -36,7 +43,14 @@ export const TimetableProvider = ({ children }) => {
 
   const updateEntry = async (id, updates) => {
     try {
-      const res = await axios.put(`/timetable/${id}`, updates);
+      const payload = {
+        ...updates,
+        dayOfWeek: updates.dayOfWeek || updates.day,
+        activityName: updates.activityName || updates.subject,
+      };
+      delete payload.day;
+      delete payload.subject;
+      const res = await axios.put(`/timetable/${id}`, payload);
       setEntries(entries.map((e) => (e._id === id ? res.data : e)));
       setTimetableError("");
     } catch (e) {

@@ -9,9 +9,9 @@ const JournalPage = () => {
   const [filtered, setFiltered] = useState(journals);
 
   useEffect(() => {
-    setFiltered(
-      journals.filter((j) => !filter || j.date.slice(0, 10) === filter)
-    );
+    const toISTDay = (d) =>
+      new Date(d).toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+    setFiltered(journals.filter((j) => !filter || toISTDay(j.date) === filter));
   }, [filter, journals]);
 
   return (

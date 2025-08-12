@@ -14,7 +14,9 @@ const NavBar = () => {
   return (
     <div className="navbar">
       <div className="nav-inner">
-        <span className="brand">Daily Dungeon</span>
+        <Link to="/" className="brand" style={{ textDecoration: "none" }}>
+          Daily Dungeon
+        </Link>
         <div className="nav-links">
           <Link to="/" className={`nav-link ${isActive("/") ? "active" : ""}`}>
             Dashboard
@@ -43,6 +45,7 @@ const NavBar = () => {
           >
             Timetable
           </Link>
+          {/* Chat removed */}
           {/* Profile link removed; avatar icon handles navigation */}
         </div>
         <div className="nav-actions">

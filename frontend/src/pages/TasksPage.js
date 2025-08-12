@@ -10,7 +10,7 @@ const TasksPage = () => {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    priority: "Medium",
+    priority: "medium",
     dueDate: "",
     reminderTime: "",
   });
@@ -41,7 +41,7 @@ const TasksPage = () => {
       setForm({
         title: "",
         description: "",
-        priority: "Medium",
+        priority: "medium",
         dueDate: "",
         reminderTime: "",
       });
@@ -72,9 +72,9 @@ const TasksPage = () => {
             value={form.priority}
             onChange={(e) => setForm({ ...form, priority: e.target.value })}
           >
-            <option>High</option>
-            <option>Medium</option>
-            <option>Low</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
           </select>
           <label>
             Due Date
@@ -94,8 +94,26 @@ const TasksPage = () => {
               }
             />
           </label>
-          <button disabled={loading} type="submit">
-            {loading ? "Adding..." : "Add Task"}
+          <button
+            disabled={loading}
+            type="submit"
+            style={{
+              minWidth: 110,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            {loading ? (
+              <>
+                <span>Adding</span>
+                <span aria-hidden>·</span>
+                <span className="spinner" style={{ width: 16, height: 16 }} />
+              </>
+            ) : (
+              "Add Task"
+            )}
           </button>
           {error && <div className="error">{error}</div>}
         </form>
@@ -121,25 +139,47 @@ const TasksPage = () => {
       <div className="grid-2">
         <div className="soft-section accent-blue">
           <h3>Pending</h3>
-          <ul>
+          <ul className="task-list">
             {pending.map((t) => (
-              <li key={t._id}>
-                <div>
-                  <span className={`pill ${t.priority.toLowerCase()}`}>
-                    {t.priority}
-                  </span>
-                  <strong>{t.title}</strong>
-                  {t.dueDate && (
-                    <span className="muted"> due {t.dueDate.slice(0, 10)}</span>
+              <li key={t._id} className={`task-card ${t.priority}`}>
+                <div className="task-main">
+                  <div className="task-title">
+                    <strong>{t.title}</strong>
+                    <span className={`pill ${t.priority}`}>{t.priority}</span>
+                    {t.dueDate && (
+                      <span className="muted">
+                        {" "}
+                        due {t.dueDate.slice(0, 10)}
+                      </span>
+                    )}
+                  </div>
+                  {t.description && (
+                    <div className="task-desc muted">{t.description}</div>
                   )}
                 </div>
-                <div className="row">
+                <div className="task-actions">
                   <button
+                    className={`btn-outline ${
+                      t.priority === "low"
+                        ? "green"
+                        : t.priority === "high"
+                        ? "red"
+                        : "amber"
+                    }`}
                     onClick={() => updateTask(t._id, { status: "completed" })}
                   >
                     Complete
                   </button>
-                  <button className="danger" onClick={() => deleteTask(t._id)}>
+                  <button
+                    className={`btn-outline ${
+                      t.priority === "low"
+                        ? "green"
+                        : t.priority === "high"
+                        ? "red"
+                        : "amber"
+                    }`}
+                    onClick={() => deleteTask(t._id)}
+                  >
                     Delete
                   </button>
                 </div>
@@ -149,20 +189,29 @@ const TasksPage = () => {
         </div>
         <div className="soft-section accent-blue">
           <h3>Completed</h3>
-          <ul>
+          <ul className="task-list">
             {completed.map((t) => (
-              <li key={t._id}>
-                <div>
-                  <span className={`pill ${t.priority.toLowerCase()}`}>
-                    {t.priority}
-                  </span>{" "}
-                  <s>{t.title}</s>
+              <li key={t._id} className={`task-card ${t.priority}`}>
+                <div className="task-main">
+                  <div className="task-title">
+                    <span className={`pill ${t.priority}`}>{t.priority}</span>{" "}
+                    <s>{t.title}</s>
+                  </div>
                 </div>
-                <button
-                  onClick={() => updateTask(t._id, { status: "pending" })}
-                >
-                  Undo
-                </button>
+                <div className="task-actions">
+                  <button
+                    className={`btn-outline ${
+                      t.priority === "low"
+                        ? "green"
+                        : t.priority === "high"
+                        ? "red"
+                        : "amber"
+                    }`}
+                    onClick={() => updateTask(t._id, { status: "pending" })}
+                  >
+                    Undo
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

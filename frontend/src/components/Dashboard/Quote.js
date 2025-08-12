@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import Spinner from "../common/Spinner";
 import { QuoteContext } from "../../context/QuoteContext";
 
 const Quote = () => {
@@ -26,7 +27,7 @@ const Quote = () => {
           disabled={nextLoading}
           aria-busy={nextLoading}
         >
-          {nextLoading ? "Loading…" : "Next Quote"}
+          {nextLoading ? <Spinner onDark size="sm" /> : "Next Quote"}
         </button>
       </div>
       <form onSubmit={submit} className="row" style={{ gap: 8, marginTop: 8 }}>

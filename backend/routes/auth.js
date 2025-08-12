@@ -14,7 +14,7 @@ router.post("/register", async (req, res) => {
     user = new User({ name: name || email.split("@")[0], email, password });
     await user.save();
     const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, jwtSecret, { expiresIn: "7d" });
+    const token = jwt.sign(payload, jwtSecret, { expiresIn: "30d" });
     res.json({ token });
   } catch (err) {
     res.status(500).send("Server error");
@@ -30,7 +30,7 @@ router.post("/login", async (req, res) => {
     const isMatch = await user.comparePassword(password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
     const payload = { user: { id: user.id } };
-    const token = jwt.sign(payload, jwtSecret, { expiresIn: "7d" });
+    const token = jwt.sign(payload, jwtSecret, { expiresIn: "30d" });
     res.json({ token });
   } catch (err) {
     res.status(500).send("Server error");
