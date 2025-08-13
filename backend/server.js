@@ -64,7 +64,7 @@ const app = express();
 // CORS CONFIGURATION
 // =====================
 const allowedOrigins = [
-  "https://your-frontend.vercel.app", // ✅ Replace with your actual Vercel frontend URL
+  "https://daily-dungeon.vercel.app", // ✅ Replace with your actual Vercel frontend URL
   "http://localhost:3000"             // ✅ Allow local React dev
 ];
 
