@@ -18,20 +18,18 @@ export const TimerProvider = ({ children }) => {
   const [sessionName, setSessionName] = useState("");
   const intervalRef = useRef(null);
 
-  const persist = () => {
+  const persist = (snapshot) => {
     try {
-      localStorage.setItem(
-        "timerState",
-        JSON.stringify({
-          mode,
-          running,
-          startedAt,
-          seconds,
-          remaining,
-          timerTotal,
-          sessionName,
-        })
-      );
+      const state = snapshot || {
+        mode,
+        running,
+        startedAt,
+        seconds,
+        remaining,
+        timerTotal,
+        sessionName,
+      };
+      localStorage.setItem("timerState", JSON.stringify(state));
     } catch {}
   };
 
@@ -104,6 +102,16 @@ export const TimerProvider = ({ children }) => {
     setStartedAt(now.toISOString());
     setSeconds(0);
     setRunning(true);
+    // Immediately persist to survive instant reloads
+    persist({
+      mode: "stopwatch",
+      running: true,
+      startedAt: now.toISOString(),
+      seconds: 0,
+      remaining: 0,
+      timerTotal: 0,
+      sessionName,
+    });
   };
 
   const startTimer = (minutes) => {
@@ -119,6 +127,16 @@ export const TimerProvider = ({ children }) => {
     setTimerTotal(total);
     setRemaining(total);
     setRunning(true);
+    // Immediately persist to survive instant reloads
+    persist({
+      mode: "timer",
+      running: true,
+      startedAt: now.toISOString(),
+      seconds: 0,
+      remaining: total,
+      timerTotal: total,
+      sessionName,
+    });
   };
 
   const stopTimer = async () => {
@@ -132,7 +150,14 @@ export const TimerProvider = ({ children }) => {
       const start = new Date(startedAt || end);
       duration = Math.max(0, Math.floor((end - start) / 1000));
     } else {
-      duration = Math.max(0, timerTotal - remaining);
+      // If app reloaded, remaining may be stale; recompute from startedAt
+      if (startedAt && timerTotal) {
+        const start = new Date(startedAt);
+        const elapsed = Math.max(0, Math.floor((end - start) / 1000));
+        duration = Math.min(timerTotal, elapsed);
+      } else {
+        duration = Math.max(0, timerTotal - remaining);
+      }
     }
     try {
       if (duration > 0) {
@@ -194,10 +219,52 @@ export const TimerProvider = ({ children }) => {
     return () => clearInterval(intervalRef.current);
   }, [running, mode, startedAt, timerTotal, sessionName]);
 
+  // If restored as running but no interval, re-establish ticking
+  useEffect(() => {
+    if (running && !intervalRef.current) {
+      const id = setInterval(() => {
+        if (mode === "stopwatch") {
+          const start = new Date(startedAt || Date.now());
+          const now = new Date();
+          setSeconds(Math.max(0, Math.floor((now - start) / 1000)));
+        } else {
+          setRemaining((r) => Math.max(0, r - 1));
+        }
+      }, 1000);
+      intervalRef.current = id;
+    }
+    return () => {
+      if (intervalRef.current && !running) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [running]);
+
   // Persist snapshot on changes
   useEffect(() => {
     persist();
   }, [mode, running, startedAt, seconds, remaining, timerTotal, sessionName]);
+
+  // Persist on page hide/unload to avoid losing fresh state
+  useEffect(() => {
+    const handleBeforeUnload = () => persist();
+    const handleVisibility = () => {
+      if (document.visibilityState === "hidden") persist();
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, []);
+
+  // Load today's sessions and streak on mount so UI doesn't appear empty after reload
+  useEffect(() => {
+    fetchToday();
+    fetchStreak();
+  }, []);
 
   // Restore from localStorage (and reconcile time)
   useEffect(() => {
