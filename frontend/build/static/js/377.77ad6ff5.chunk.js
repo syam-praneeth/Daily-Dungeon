@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkdaily_dungeon_frontend=self.webpackChunkdaily_dungeon_frontend||[]).push([[377],{3377:(e,n,s)=>{s.r(n),s.d(n,{default:()=>c});s(5043);var d=s(6254),a=s(579);const c=()=>(0,a.jsxs)("div",{className:"container",children:[(0,a.jsx)("h2",{children:"Reading Timer"}),(0,a.jsx)("div",{className:"soft-section accent-emerald",children:(0,a.jsx)(d.A,{})})]})}}]);
-//# sourceMappingURL=377.77ad6ff5.chunk.js.map

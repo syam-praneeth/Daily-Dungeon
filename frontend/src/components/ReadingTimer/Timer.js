@@ -10,6 +10,7 @@ const Timer = () => {
     // live timer state
     mode,
     running,
+    paused,
     seconds,
     remaining,
     timerTotal,
@@ -19,6 +20,8 @@ const Timer = () => {
     startStopwatch,
     startTimer,
     stopTimer,
+    pauseTimer,
+    resumeTimer,
     setTimerMode,
   } = useContext(TimerContext);
   const [goalMin, setGoalMin] = useState(""); // optional for stopwatch progress
@@ -127,14 +130,30 @@ const Timer = () => {
             style={{ width: 140, padding: 8 }}
           />
         )}
-        {!running ? (
+        {!running && !paused && (
           <button className="btn" onClick={start}>
             Start
           </button>
-        ) : (
-          <button className="btn" onClick={stop}>
-            Stop
-          </button>
+        )}
+        {running && (
+          <>
+            <button className="btn" onClick={pauseTimer}>
+              Pause
+            </button>
+            <button className="btn" onClick={stop}>
+              Stop
+            </button>
+          </>
+        )}
+        {!running && paused && (
+          <>
+            <button className="btn" onClick={resumeTimer}>
+              Resume
+            </button>
+            <button className="btn" onClick={stop}>
+              Stop
+            </button>
+          </>
         )}
       </div>
       {/* Circular clock */}

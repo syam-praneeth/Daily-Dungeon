@@ -16,6 +16,7 @@ export const TimerProvider = ({ children }) => {
   const [remaining, setRemaining] = useState(0); // countdown remaining
   const [timerTotal, setTimerTotal] = useState(0); // countdown total
   const [sessionName, setSessionName] = useState("");
+  const [paused, setPaused] = useState(false);
   const intervalRef = useRef(null);
 
   const persist = (snapshot) => {
@@ -23,6 +24,7 @@ export const TimerProvider = ({ children }) => {
       const state = snapshot || {
         mode,
         running,
+        paused,
         startedAt,
         seconds,
         remaining,
@@ -102,10 +104,12 @@ export const TimerProvider = ({ children }) => {
     setStartedAt(now.toISOString());
     setSeconds(0);
     setRunning(true);
+    setPaused(false);
     // Immediately persist to survive instant reloads
     persist({
       mode: "stopwatch",
       running: true,
+      paused: false,
       startedAt: now.toISOString(),
       seconds: 0,
       remaining: 0,
@@ -127,10 +131,12 @@ export const TimerProvider = ({ children }) => {
     setTimerTotal(total);
     setRemaining(total);
     setRunning(true);
+    setPaused(false);
     // Immediately persist to survive instant reloads
     persist({
       mode: "timer",
       running: true,
+      paused: false,
       startedAt: now.toISOString(),
       seconds: 0,
       remaining: total,
@@ -139,19 +145,64 @@ export const TimerProvider = ({ children }) => {
     });
   };
 
-  const stopTimer = async () => {
+  // Pause without saving a session
+  const pauseTimer = () => {
     if (!running) return;
+    const now = new Date();
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (mode === "stopwatch") {
+      const start = new Date(startedAt || now);
+      const elapsed = Math.max(0, Math.floor((now - start) / 1000));
+      setSeconds(elapsed);
+    } else {
+      if (startedAt && timerTotal) {
+        const start = new Date(startedAt);
+        const elapsed = Math.max(0, Math.floor((now - start) / 1000));
+        const rem = Math.max(0, timerTotal - elapsed);
+        setRemaining(rem);
+      }
+    }
     setRunning(false);
+    setPaused(true);
+    setStartedAt(null);
+    persist();
+  };
+
+  // Resume after pause
+  const resumeTimer = () => {
+    if (running || !paused) return;
+    const now = new Date();
+    if (mode === "stopwatch") {
+      const start = new Date(now.getTime() - (seconds || 0) * 1000);
+      setStartedAt(start.toISOString());
+    } else {
+      const elapsed = Math.max(0, (timerTotal || 0) - (remaining || 0));
+      const start = new Date(now.getTime() - elapsed * 1000);
+      setStartedAt(start.toISOString());
+    }
+    setRunning(true);
+    setPaused(false);
+    persist();
+  };
+
+  const stopTimer = async () => {
+    if (!running && !paused) return;
+    setRunning(false);
+    setPaused(false);
     if (intervalRef.current) clearInterval(intervalRef.current);
     const end = new Date();
     let duration = 0;
     if (mode === "stopwatch") {
       // recompute elapsed based on startedAt to avoid drift
-      const start = new Date(startedAt || end);
-      duration = Math.max(0, Math.floor((end - start) / 1000));
+      if (paused) {
+        duration = Math.max(0, seconds || 0);
+      } else {
+        const start = new Date(startedAt || end);
+        duration = Math.max(0, Math.floor((end - start) / 1000));
+      }
     } else {
       // If app reloaded, remaining may be stale; recompute from startedAt
-      if (startedAt && timerTotal) {
+      if (!paused && startedAt && timerTotal) {
         const start = new Date(startedAt);
         const elapsed = Math.max(0, Math.floor((end - start) / 1000));
         duration = Math.min(timerTotal, elapsed);
@@ -275,6 +326,7 @@ export const TimerProvider = ({ children }) => {
       setMode(s.mode || "stopwatch");
       setSessionName(s.sessionName || "");
       setTimerTotal(s.timerTotal || 0);
+      setPaused(!!s.paused);
       const now = new Date();
       if (s.startedAt && s.running) {
         setStartedAt(s.startedAt);
@@ -294,15 +346,16 @@ export const TimerProvider = ({ children }) => {
       } else {
         setRunning(false);
         setStartedAt(null);
-        setSeconds(0);
-        setRemaining(0);
+        // keep paused snapshot values if any
+        setSeconds(s.seconds || 0);
+        setRemaining(s.remaining || 0);
       }
     } catch {}
   }, []);
 
   // Allow switching mode safely when not running
   const setTimerMode = (m) => {
-    if (running) return;
+    if (running || paused) return;
     setMode(m === "timer" ? "timer" : "stopwatch");
     setSeconds(0);
     setRemaining(0);
@@ -324,6 +377,7 @@ export const TimerProvider = ({ children }) => {
         // exposed live timer state
         mode,
         running,
+        paused,
         startedAt,
         seconds,
         remaining,
@@ -333,6 +387,8 @@ export const TimerProvider = ({ children }) => {
         setTimerMode,
         startStopwatch,
         startTimer,
+        pauseTimer,
+        resumeTimer,
         stopTimer,
       }}
     >

@@ -79,7 +79,8 @@
   box-shadow: 0 8px 26px rgba(0, 0, 0, 0.12);
   transform: translateY(-2px);
 }
-.dd-card:focus-within {
+/* Show focus ring only on focused interactive elements (keyboard), not the whole card */
+.dd-card *:focus-visible {
   outline: 2px solid #84cc16;
   outline-offset: 2px;
 }
