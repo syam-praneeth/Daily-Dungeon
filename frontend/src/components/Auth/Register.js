@@ -134,9 +134,24 @@ const Register = () => {
                 <span>Name</span>
                 <div className="field-wrap">
                   <span className="icon" aria-hidden>
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="12" cy="8" r="3.5" stroke="#94a3b8" strokeWidth="1.6" />
-                      <path d="M5 18.5c1.6-3 4.2-4.5 7-4.5s5.4 1.5 7 4.5" stroke="#94a3b8" strokeWidth="1.6" strokeLinecap="round" />
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <circle
+                        cx="12"
+                        cy="8"
+                        r="3.5"
+                        stroke="#94a3b8"
+                        strokeWidth="1.6"
+                      />
+                      <path
+                        d="M5 18.5c1.6-3 4.2-4.5 7-4.5s5.4 1.5 7 4.5"
+                        stroke="#94a3b8"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                      />
                     </svg>
                   </span>
                   <input

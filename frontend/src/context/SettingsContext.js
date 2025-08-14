@@ -45,7 +45,8 @@ export function SettingsProvider({ children }) {
   const setFocusGoal = (minutes) =>
     setSettings((s) => ({
       ...s,
-      focusGoalMinutes: Math.max(5, Number(minutes) || 60),
+      // Allow custom goal >=1 minute (user requested no restriction to 5-minute steps)
+      focusGoalMinutes: Math.max(1, Number(minutes) || 60),
     }));
   const setTheme = (theme) => setSettings((s) => ({ ...s, theme }));
   const toggleTheme = () =>

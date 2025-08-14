@@ -1,6 +1,10 @@
 import React, { useContext, useMemo, useState } from "react";
 import { TaskContext } from "../context/TaskContext";
 import debounce from "lodash.debounce";
+import TaskForm from "../components/Tasks/TaskForm";
+import TaskList from "../components/Tasks/TaskList";
+import { Card, CardBody, CardHeader, CardMenu } from "../components/ui/Card";
+import "../components/Dashboard/dashboard-grid.css";
 
 const TasksPage = () => {
   const { tasks, addTask, updateTask, deleteTask, taskError } =
@@ -53,169 +57,66 @@ const TasksPage = () => {
   };
 
   return (
-    <div className="container">
-      <h2>Daily Tasks</h2>
-      <div className="soft-section accent-blue">
-        <form onSubmit={submit} className="grid">
-          <input
-            placeholder="Title"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            required
-          />
-          <textarea
-            placeholder="Description"
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-          />
-          <select
-            value={form.priority}
-            onChange={(e) => setForm({ ...form, priority: e.target.value })}
-          >
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
-          <label>
-            Due Date
-            <input
-              type="date"
-              value={form.dueDate}
-              onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
-            />
-          </label>
-          <label>
-            Reminder
-            <input
-              type="datetime-local"
-              value={form.reminderTime}
-              onChange={(e) =>
-                setForm({ ...form, reminderTime: e.target.value })
-              }
-            />
-          </label>
-          <button
-            disabled={loading}
-            type="submit"
-            style={{
-              minWidth: 110,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-            }}
-          >
-            {loading ? (
-              <>
-                <span>Adding</span>
-                <span aria-hidden>·</span>
-                <span className="spinner" style={{ width: 16, height: 16 }} />
-              </>
-            ) : (
-              "Add Task"
+    <div style={{ maxWidth: 1280, margin: "16px auto", overflow: "hidden" }}>
+      <div className="dd-grid">
+        <Card className="col-span-12 sm:col-span-12 dd-card--blue">
+          <CardHeader title="Task Creation" actions={<CardMenu />} />
+          <CardBody>
+            <TaskForm />
+            {error && (
+              <div className="error" style={{ marginTop: 6 }}>
+                {error}
+              </div>
             )}
-          </button>
-          {error && <div className="error">{error}</div>}
-        </form>
-      </div>
+          </CardBody>
+        </Card>
 
-      <div className="toolbar">
-        <input
-          placeholder="Search"
-          onChange={(e) => onSearch(e.target.value)}
-        />
-        <select
-          value={priorityFilter}
-          onChange={(e) => setPriorityFilter(e.target.value)}
-        >
-          <option value="">All</option>
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
-      </div>
-      {taskError && <div className="error">{taskError}</div>}
+        <Card className="col-span-4 lg:col-span-4 sm:col-span-12 dd-card--slate">
+          <CardHeader title="Filters" actions={<CardMenu />} />
+          <CardBody>
+            <div className="grid" style={{ gap: 8 }}>
+              <input
+                placeholder="Search tasks"
+                onChange={(e) => onSearch(e.target.value)}
+              />
+              <select
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
+              >
+                <option value="">All priorities</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+              {taskError && <div className="error">{taskError}</div>}
+            </div>
+            <div style={{ fontSize: 12, color: "#64748b", marginTop: 8 }}>
+              Showing {filtered.length} / {tasks.length} tasks
+            </div>
+          </CardBody>
+        </Card>
 
-      <div className="grid-2">
-        <div className="soft-section accent-blue">
-          <h3>Pending</h3>
-          <ul className="task-list">
-            {pending.map((t) => (
-              <li key={t._id} className={`task-card ${t.priority}`}>
-                <div className="task-main">
-                  <div className="task-title">
-                    <strong>{t.title}</strong>
-                    <span className={`pill ${t.priority}`}>{t.priority}</span>
-                    {t.dueDate && (
-                      <span className="muted">
-                        {" "}
-                        due {t.dueDate.slice(0, 10)}
-                      </span>
-                    )}
-                  </div>
-                  {t.description && (
-                    <div className="task-desc muted">{t.description}</div>
-                  )}
-                </div>
-                <div className="task-actions">
-                  <button
-                    className={`btn-outline ${
-                      t.priority === "low"
-                        ? "green"
-                        : t.priority === "high"
-                        ? "red"
-                        : "amber"
-                    }`}
-                    onClick={() => updateTask(t._id, { status: "completed" })}
-                  >
-                    Complete
-                  </button>
-                  <button
-                    className={`btn-outline ${
-                      t.priority === "low"
-                        ? "green"
-                        : t.priority === "high"
-                        ? "red"
-                        : "amber"
-                    }`}
-                    onClick={() => deleteTask(t._id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="soft-section accent-blue">
-          <h3>Completed</h3>
-          <ul className="task-list">
-            {completed.map((t) => (
-              <li key={t._id} className={`task-card ${t.priority}`}>
-                <div className="task-main">
-                  <div className="task-title">
-                    <span className={`pill ${t.priority}`}>{t.priority}</span>{" "}
-                    <s>{t.title}</s>
-                  </div>
-                </div>
-                <div className="task-actions">
-                  <button
-                    className={`btn-outline ${
-                      t.priority === "low"
-                        ? "green"
-                        : t.priority === "high"
-                        ? "red"
-                        : "amber"
-                    }`}
-                    onClick={() => updateTask(t._id, { status: "pending" })}
-                  >
-                    Undo
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <Card className="col-span-8 lg:col-span-8 sm:col-span-12 dd-card--emerald">
+          <CardHeader title="Pending" actions={<CardMenu />} />
+          <CardBody>
+            {pending.length ? (
+              <TaskList tasksOverride={pending} />
+            ) : (
+              <div style={{ fontSize: 14 }}>No pending tasks.</div>
+            )}
+          </CardBody>
+        </Card>
+
+        <Card className="col-span-12 sm:col-span-12 dd-card--rose">
+          <CardHeader title="Completed" actions={<CardMenu />} />
+          <CardBody>
+            {completed.length ? (
+              <TaskList tasksOverride={completed} />
+            ) : (
+              <div style={{ fontSize: 14 }}>No completed tasks yet.</div>
+            )}
+          </CardBody>
+        </Card>
       </div>
     </div>
   );

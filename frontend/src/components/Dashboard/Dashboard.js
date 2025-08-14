@@ -52,6 +52,18 @@ const Dashboard = () => {
           <CardHeader title="Quote of the Day" actions={<CardMenu />} />
           <CardBody>
             <Quote />
+            <div
+              style={{
+                marginTop: 12,
+                borderTop: "1px solid #e2e8f0",
+                paddingTop: 12,
+              }}
+            >
+              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>
+                Quick Task
+              </div>
+              <TaskForm compact />
+            </div>
           </CardBody>
         </Card>
 
@@ -92,8 +104,8 @@ const Dashboard = () => {
                 <input
                   id="goal"
                   type="number"
-                  min={5}
-                  step={5}
+                  min={1}
+                  step={1}
                   value={settings.focusGoalMinutes}
                   onChange={(e) => setFocusGoal(e.target.value)}
                   style={{

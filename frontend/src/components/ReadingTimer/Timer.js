@@ -80,127 +80,195 @@ const Timer = () => {
     return `${mm}:${ss}`;
   };
 
+  // Unique previous session names for suggestions (exclude empty)
+  const suggestions = Array.from(
+    new Set(
+      (sessionsToday || [])
+        .map((s) => (s.sessionName || "Reading").trim())
+        .filter(Boolean)
+    )
+  ).slice(0, 12);
+
+  const presetMinutes = [5, 10, 15, 20, 25, 30, 45, 60];
+
   return (
-    <div>
-      {/* Mode toggle */}
-      <div className="row" style={{ marginBottom: 8 }}>
+    <div className="timer-panel">
+      <div className="segmented" role="tablist" aria-label="Timer mode">
         <button
-          className="btn-secondary"
-          disabled={running}
+          type="button"
+          role="tab"
+          aria-selected={mode === "stopwatch"}
+          disabled={running || paused}
           onClick={() => setTimerMode("stopwatch")}
-          aria-pressed={mode === "stopwatch"}
         >
           Stopwatch
         </button>
         <button
-          className="btn-secondary"
-          disabled={running}
+          type="button"
+          role="tab"
+          aria-selected={mode === "timer"}
+          disabled={running || paused}
           onClick={() => setTimerMode("timer")}
-          aria-pressed={mode === "timer"}
         >
-          Timer
+          Countdown
         </button>
       </div>
-      <div
-        className="row"
-        style={{ gap: 8, alignItems: "center", marginBottom: 8 }}
-      >
-        <input
-          placeholder="Session name (e.g., Biology, Novel)"
-          value={sessionName}
-          onChange={(e) => setSessionName(e.target.value)}
-          style={{ flex: 1, padding: 8 }}
-        />
+
+      <div className="timer-fields">
+        <label className="timer-field">
+          <span className="tf-label">Session name</span>
+          <input
+            list="session-suggestions"
+            placeholder="e.g. Biology, Novel"
+            value={sessionName}
+            onChange={(e) => setSessionName(e.target.value)}
+          />
+          <datalist id="session-suggestions">
+            {suggestions.map((n) => (
+              <option key={n} value={n} />
+            ))}
+          </datalist>
+        </label>
         {mode === "stopwatch" ? (
-          <input
-            type="number"
-            min="0"
-            placeholder="Goal (min, optional)"
-            value={goalMin}
-            onChange={(e) => setGoalMin(e.target.value)}
-            style={{ width: 160, padding: 8 }}
-          />
-        ) : (
-          <input
-            type="number"
-            min="1"
-            placeholder="Timer (min)"
-            value={timerMin}
-            onChange={(e) => setTimerMin(e.target.value)}
-            style={{ width: 140, padding: 8 }}
-          />
-        )}
-        {!running && !paused && (
-          <button className="btn" onClick={start}>
-            Start
-          </button>
-        )}
-        {running && (
-          <>
-            <button className="btn" onClick={pauseTimer}>
-              Pause
-            </button>
-            <button className="btn" onClick={stop}>
-              Stop
-            </button>
-          </>
-        )}
-        {!running && paused && (
-          <>
-            <button className="btn" onClick={resumeTimer}>
-              Resume
-            </button>
-            <button className="btn" onClick={stop}>
-              Stop
-            </button>
-          </>
-        )}
-      </div>
-      {/* Circular clock */}
-      <div
-        className="row"
-        style={{ gap: 16, alignItems: "center", marginBottom: 8 }}
-      >
-        <svg width="160" height="160" viewBox="0 0 160 160">
-          <defs>
-            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#3b82f6" />
-              <stop offset="100%" stopColor="#8b5cf6" />
-            </linearGradient>
-          </defs>
-          <g transform="translate(80,80)">
-            <circle r={60} fill="none" stroke="#e5e7eb" strokeWidth="10" />
-            <circle
-              r={60}
-              fill="none"
-              stroke="url(#grad)"
-              strokeWidth="10"
-              strokeLinecap="round"
-              strokeDasharray={C}
-              strokeDashoffset={dashOffset}
-              transform="rotate(-90)"
+          <label className="timer-field small">
+            <span className="tf-label">Goal (min, optional)</span>
+            <input
+              type="number"
+              min="0"
+              value={goalMin}
+              onChange={(e) => setGoalMin(e.target.value)}
+              placeholder="—"
             />
-            <text
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontSize="24"
-              fill="#111827"
+          </label>
+        ) : (
+          <label className="timer-field small">
+            <span className="tf-label">Minutes</span>
+            <input
+              type="number"
+              min="1"
+              value={timerMin}
+              onChange={(e) => setTimerMin(e.target.value)}
+              placeholder="25"
+            />
+          </label>
+        )}
+        <div className="timer-actions">
+          {!running && !paused && (
+            <button
+              className="btn"
+              onClick={start}
+              disabled={mode === "timer" && !(Number(timerMin) > 0)}
             >
-              {displayMMSS()}
-            </text>
-          </g>
-        </svg>
-        <div style={{ color: "#666" }}>
-          Mode: <strong>{mode}</strong>
-          <div style={{ marginTop: 6 }}>
-            Today: {Math.floor(readingToday / 60)}m {readingToday % 60}s
-          </div>
-          <div style={{ marginTop: 4 }}>Current: {displayCurrentMMSS()}</div>
+              Start
+            </button>
+          )}
+          {running && (
+            <>
+              <button className="btn" onClick={pauseTimer}>
+                Pause
+              </button>
+              <button className="btn" onClick={stop}>
+                Stop
+              </button>
+            </>
+          )}
+          {!running && paused && (
+            <>
+              <button className="btn" onClick={resumeTimer}>
+                Resume
+              </button>
+              <button className="btn" onClick={stop}>
+                Save & Reset
+              </button>
+            </>
+          )}
         </div>
       </div>
+
+      {mode === "timer" && !running && !paused && (
+        <div className="chips" aria-label="Quick minute presets">
+          {presetMinutes.map((m) => (
+            <button
+              key={m}
+              type="button"
+              className={`chip ${Number(timerMin) === m ? "active" : ""}`}
+              onClick={() => setTimerMin(String(m))}
+            >
+              {m}m
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="timer-visuals">
+        <div className="circle-wrap">
+          <svg width="160" height="160" viewBox="0 0 160 160">
+            <defs>
+              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#3b82f6" />
+                <stop offset="100%" stopColor="#8b5cf6" />
+              </linearGradient>
+            </defs>
+            <g transform="translate(80,80)">
+              <circle r={60} fill="none" stroke="#e5e7eb" strokeWidth="10" />
+              <circle
+                r={60}
+                fill="none"
+                stroke="url(#grad)"
+                strokeWidth="10"
+                strokeLinecap="round"
+                strokeDasharray={C}
+                strokeDashoffset={dashOffset}
+                transform="rotate(-90)"
+              />
+              <text
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fontSize="24"
+                fill="#111827"
+              >
+                {displayMMSS()}
+              </text>
+            </g>
+          </svg>
+        </div>
+        <div className="timer-stats">
+          <div className="stat-row">
+            <span className="label">Mode</span>
+            <span className="value">{mode}</span>
+          </div>
+          <div className="stat-row">
+            <span className="label">Today</span>
+            <span className="value">
+              {Math.floor(readingToday / 60)}m {readingToday % 60}s
+            </span>
+          </div>
+          <div className="stat-row">
+            <span className="label">Elapsed</span>
+            <span className="value">{displayCurrentMMSS()}</span>
+          </div>
+          {mode === "stopwatch" && Number(goalMin) > 0 && (
+            <div className="progress-bar" aria-label="Goal progress">
+              <div
+                className="progress-fill"
+                style={{ width: `${Math.min(100, progress * 100)}%` }}
+              ></div>
+            </div>
+          )}
+          {mode === "timer" && timerTotal > 0 && (
+            <div className="progress-bar" aria-label="Timer remaining">
+              <div
+                className="progress-fill"
+                style={{ width: `${Math.min(100, progress * 100)}%` }}
+              ></div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {sortedSessions?.length > 0 && (
-        <div className="card" style={{ marginTop: 8 }}>
-          <strong>Today's sessions</strong>
+        <div className="card" style={{ marginTop: 12 }}>
+          <strong style={{ fontSize: 14 }}>Today's sessions</strong>
           <table className="table" style={{ marginTop: 6 }}>
             <thead>
               <tr>

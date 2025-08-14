@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import { TaskContext } from "../../context/TaskContext";
 
-const TaskList = () => {
+const TaskList = ({ tasksOverride }) => {
   const { tasks, updateTask, deleteTask } = useContext(TaskContext);
+  const list = tasksOverride || tasks;
 
   const handleToggle = (task) => {
     updateTask(task._id, {
@@ -12,7 +13,7 @@ const TaskList = () => {
 
   return (
     <ul className="task-list">
-      {tasks.map((task) => {
+      {list.map((task) => {
         const priorityClass = `task-card ${task.priority || "medium"}`;
         const isDone = task.status === "completed";
         return (

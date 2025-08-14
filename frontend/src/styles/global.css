@@ -25,6 +25,273 @@ body {
   color: var(--text);
 }
 
+/* Timer improvements */
+.timer-panel {
+  margin-bottom: 16px;
+}
+.segmented {
+  display: inline-flex;
+  background: #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  margin-bottom: 12px;
+}
+.segmented button {
+  background: transparent;
+  border: 0;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  transition: background 0.16s, color 0.16s;
+}
+.segmented button[aria-selected="true"] {
+  background: #fff;
+  color: #111827;
+  box-shadow: 0 0 0 1px #cbd5e1 inset;
+}
+.segmented button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.timer-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  margin-bottom: 8px;
+}
+.timer-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 160px;
+  flex: 1;
+}
+.timer-field.small {
+  max-width: 120px;
+  flex: 0 0 auto;
+}
+.tf-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.timer-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 12px;
+}
+.chip {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+.chip:hover {
+  background: #f1f5f9;
+}
+.chip.active {
+  background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+  color: #fff;
+  border-color: transparent;
+}
+.timer-visuals {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin: 8px 0 4px;
+  flex-wrap: wrap;
+}
+.circle-wrap {
+  flex: 0 0 auto;
+}
+.timer-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+}
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #334155;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+[data-theme="dark"] .stat-row {
+  background: #1e293b;
+  color: #cbd5e1;
+}
+.progress-bar {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+}
+
+/* Task form enhancements */
+.task-form-wrapper {
+  margin-bottom: 12px;
+}
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.quick-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.quick-title {
+  flex: 1;
+  min-width: 180px;
+}
+.priority-radio-group {
+  display: inline-flex;
+  gap: 4px;
+  background: #e2e8f0;
+  padding: 4px;
+  border-radius: 999px;
+}
+.prio-pill {
+  border: 0;
+  background: transparent;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #334155;
+  transition: background 0.15s, color 0.15s, transform 0.12s;
+}
+.prio-pill.low {
+  color: #166534;
+}
+.prio-pill.medium {
+  color: #92400e;
+}
+.prio-pill.high {
+  color: #991b1b;
+}
+.prio-pill.active,
+.prio-pill:hover {
+  background: #fff;
+  box-shadow: 0 0 0 1px #cbd5e1 inset;
+}
+.prio-pill.active.low {
+  box-shadow: 0 0 0 2px #059669 inset;
+  background: #d1fae5;
+}
+.prio-pill.active.medium {
+  box-shadow: 0 0 0 2px #d97706 inset;
+  background: #ffedd5;
+}
+.prio-pill.active.high {
+  box-shadow: 0 0 0 2px #dc2626 inset;
+  background: #fee2e2;
+}
+.toggle-adv {
+  font-size: 12px;
+  padding: 8px 10px;
+}
+.add-btn {
+  min-width: 72px;
+}
+.advanced-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+.advanced-grid label {
+  font-size: 12px;
+}
+.advanced-grid textarea {
+  resize: vertical;
+}
+[data-theme="dark"] .priority-legend {
+  color: #94a3b8;
+}
+.priority-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  margin-top: 4px;
+  color: #475569;
+}
+.priority-legend .legend-item {
+  background: #e2e8f0;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.priority-legend .legend-item.low {
+  background: #d1fae5;
+  color: #065f46;
+}
+.priority-legend .legend-item.medium {
+  background: #ffedd5;
+  color: #92400e;
+}
+.priority-legend .legend-item.high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.prio-pill.low:hover {
+  background: #bbf7d0;
+}
+.prio-pill.medium:hover {
+  background: #fed7aa;
+}
+.prio-pill.high:hover {
+  background: #fecaca;
+}
+[data-theme="dark"] .segmented {
+  background: #1e293b;
+}
+[data-theme="dark"] .segmented button[aria-selected="true"] {
+  background: #0f172a;
+  color: #fff;
+}
+[data-theme="dark"] .chip {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+[data-theme="dark"] .chip.active {
+  background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+}
+[data-theme="dark"] .priority-radio-group {
+  background: #1e293b;
+}
+[data-theme="dark"] .prio-pill.active,
+[data-theme="dark"] .prio-pill:hover {
+  background: #334155;
+  color: #fff;
+}
+
 /* reserved: remove page lock to keep navbar visible */
 
 /* Layout */
@@ -310,6 +577,93 @@ a.btn {
 .pill.low {
   background: #dcfce7;
   color: #166534;
+}
+
+/* Time selection pills (timetable) */
+.time-pill {
+  border: 1px solid #94a3b8;
+  background: #f1f5f9;
+  color: #0f172a;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  line-height: 1.2;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+.time-pill:hover {
+  background: #e2e8f0;
+}
+.time-pill.active {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #059669;
+  font-weight: 600;
+}
+/* Duration buckets */
+.duration-pill.short:not(.active) {
+  background: #d1fae5;
+  border-color: #059669;
+  color: #065f46;
+}
+.duration-pill.medium:not(.active) {
+  background: #ffedd5;
+  border-color: #d97706;
+  color: #92400e;
+}
+.duration-pill.long:not(.active) {
+  background: #fee2e2;
+  border-color: #dc2626;
+  color: #991b1b;
+}
+.duration-pill.short.active {
+  background: #059669;
+  border-color: #047857;
+}
+.duration-pill.medium.active {
+  background: #d97706;
+  border-color: #b45309;
+}
+.duration-pill.long.active {
+  background: #dc2626;
+  border-color: #b91c1c;
+}
+[data-theme="dark"] .duration-pill.short:not(.active) {
+  background: #064e3b;
+  border-color: #059669;
+  color: #d1fae5;
+}
+[data-theme="dark"] .duration-pill.medium:not(.active) {
+  background: #78350f;
+  border-color: #d97706;
+  color: #ffedd5;
+}
+[data-theme="dark"] .duration-pill.long:not(.active) {
+  background: #7f1d1d;
+  border-color: #dc2626;
+  color: #fee2e2;
+}
+[data-theme="dark"] .duration-pill.short.active {
+  background: #059669;
+}
+[data-theme="dark"] .duration-pill.medium.active {
+  background: #d97706;
+}
+[data-theme="dark"] .duration-pill.long.active {
+  background: #dc2626;
+}
+[data-theme="dark"] .time-pill {
+  background: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+[data-theme="dark"] .time-pill:hover {
+  background: #334155;
+}
+[data-theme="dark"] .time-pill.active {
+  background: #059669;
+  border-color: #10b981;
+  color: #ffffff;
 }
 
 /* Inputs */
@@ -657,6 +1011,42 @@ label {
 }
 .quote-box span {
   display: inline;
+}
+.quote-fade {
+  animation: quoteFade 0.6s ease;
+}
+@keyframes quoteFade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.quote-paused {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(15, 23, 42, 0.6);
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Priority legend icon */
+.prio-legend-icon {
+  font-size: 14px;
+  margin-left: 4px;
+  cursor: help;
+  align-self: center;
+}
+[data-theme="dark"] .prio-legend-icon {
+  color: #cbd5e1;
 }
 @media (max-width: 520px) {
   .quote-box {
