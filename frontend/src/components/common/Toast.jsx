@@ -1,6 +1,12 @@
 import React, { useEffect } from "react";
 
-export default function Toast({ open, message, onClose, duration = 2500 }) {
+export default function Toast({
+  open,
+  message,
+  onClose,
+  duration = 2500,
+  action,
+}) {
   useEffect(() => {
     if (!open) return;
     const id = setTimeout(() => onClose?.(), duration);
@@ -22,9 +28,25 @@ export default function Toast({ open, message, onClose, duration = 2500 }) {
           padding: "10px 14px",
           boxShadow: "0 12px 32px -12px rgba(0,0,0,.5)",
           maxWidth: 360,
+          display: "flex",
+          gap: 8,
+          alignItems: "center",
         }}
       >
-        {message}
+        <div style={{ flex: 1 }}>{message}</div>
+        {action && (
+          <button
+            onClick={action.onClick}
+            style={{
+              background: "transparent",
+              color: "#60a5fa",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            {action.label}
+          </button>
+        )}
       </div>
     </div>
   );

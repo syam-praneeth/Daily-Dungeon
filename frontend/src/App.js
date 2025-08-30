@@ -19,6 +19,7 @@ const TimerPage = lazy(() => import("./pages/TimerPage"));
 const JournalPage = lazy(() => import("./pages/JournalPage"));
 const TimetablePage = lazy(() => import("./pages/TimetablePage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const BookmarksPage = lazy(() => import("./pages/BookmarksPage"));
 
 function App() {
   return (
@@ -31,35 +32,41 @@ function App() {
                 <SettingsProvider>
                   <BrowserRouter>
                     <NavBar />
-                    <Suspense
-                      fallback={
-                        <div
-                          style={{
-                            padding: 24,
-                            display: "flex",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <Spinner size="lg" />
-                        </div>
-                      }
-                    >
-                      <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route element={<ProtectedRoute />}>
-                          <Route path="/" element={<Dashboard />} />
-                          <Route path="/tasks" element={<TasksPage />} />
-                          <Route path="/timer" element={<TimerPage />} />
-                          <Route path="/journal" element={<JournalPage />} />
-                          <Route
-                            path="/timetable"
-                            element={<TimetablePage />}
-                          />
-                          <Route path="/profile" element={<ProfilePage />} />
-                        </Route>
-                      </Routes>
-                    </Suspense>
+                    <div className="app-content">
+                      <Suspense
+                        fallback={
+                          <div
+                            style={{
+                              padding: 24,
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Spinner size="lg" />
+                          </div>
+                        }
+                      >
+                        <Routes>
+                          <Route path="/login" element={<Login />} />
+                          <Route path="/register" element={<Register />} />
+                          <Route element={<ProtectedRoute />}>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/tasks" element={<TasksPage />} />
+                            <Route path="/timer" element={<TimerPage />} />
+                            <Route path="/journal" element={<JournalPage />} />
+                            <Route
+                              path="/timetable"
+                              element={<TimetablePage />}
+                            />
+                            <Route
+                              path="/bookmarks"
+                              element={<BookmarksPage />}
+                            />
+                            <Route path="/profile" element={<ProfilePage />} />
+                          </Route>
+                        </Routes>
+                      </Suspense>
+                    </div>
                   </BrowserRouter>
                 </SettingsProvider>
               </TimetableProvider>
