@@ -7,9 +7,10 @@ const QuoteSchema = new mongoose.Schema(
     category: { type: String },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true }, // optional
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 QuoteSchema.index({ userId: 1 });
 
 module.exports = mongoose.model("Quote", QuoteSchema);
+

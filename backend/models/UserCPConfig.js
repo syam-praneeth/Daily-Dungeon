@@ -63,7 +63,8 @@ const UserCPConfigSchema = new mongoose.Schema(
       codeforces: { type: SelfReportedCodeforcesSchema },
     },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 module.exports = mongoose.model("UserCPConfig", UserCPConfigSchema);
+

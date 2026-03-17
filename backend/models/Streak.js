@@ -11,9 +11,10 @@ const StreakSchema = new mongoose.Schema(
     date: { type: Date, required: true, index: true },
     isActive: { type: Boolean, default: false },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 StreakSchema.index({ userId: 1, date: 1 });
 
 module.exports = mongoose.model("Streak", StreakSchema);
+

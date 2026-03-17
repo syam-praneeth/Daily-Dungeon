@@ -151,7 +151,7 @@ function socketServer(httpServer, corsOrigin = "*") {
         });
         await Conversation.updateOne(
           { _id: conversationId },
-          { $set: { lastMessageId: msg._id, updatedAt: new Date() } }
+          { $set: { lastMessageId: msg._id } }
         );
         // Ensure all online members are joined to this conversation room (covers new convs)
         try {

@@ -17,7 +17,8 @@ const TaskSchema = new mongoose.Schema(
     },
     reminder: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 module.exports = mongoose.model("Task", TaskSchema);
+

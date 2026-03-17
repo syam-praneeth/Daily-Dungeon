@@ -26,7 +26,7 @@ const ContestSchema = new mongoose.Schema(
     remind: { type: Boolean, default: false },
     endTime: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 ContestSchema.pre("save", function (next) {
@@ -51,3 +51,4 @@ ContestSchema.pre("findOneAndUpdate", function (next) {
 });
 
 module.exports = mongoose.model("Contest", ContestSchema);
+

@@ -6,7 +6,8 @@ const ReadingTimeSchema = new mongoose.Schema(
     date: { type: Date, required: true },
     timeSpent: { type: Number, default: 0 }, // in seconds
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 module.exports = mongoose.model("ReadingTime", ReadingTimeSchema);
+

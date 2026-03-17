@@ -33,7 +33,8 @@ const UserLinksSchema = new mongoose.Schema(
     },
     links: { type: LinksSchema, default: () => ({}) },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 module.exports = mongoose.model("UserLinks", UserLinksSchema);
+

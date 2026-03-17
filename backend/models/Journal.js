@@ -13,7 +13,7 @@ const JournalSchema = new mongoose.Schema(
     mood: { type: String },
     tags: [{ type: String }],
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 JournalSchema.index({ userId: 1, date: 1 });
@@ -21,3 +21,4 @@ JournalSchema.index({ userId: 1, date: 1 });
 JournalSchema.index({ userId: 1, date: 1 });
 
 module.exports = mongoose.model("Journal", JournalSchema);
+

@@ -1,260 +1,621 @@
-/* Grid breakpoints */
+/* ============================================
+   DAILY DUNGEON - DASHBOARD GRID SYSTEM
+   Glassmorphism cards with neon hover effects
+   ============================================ */
+
+/* =============================================
+   GRID SYSTEM
+   12-column responsive grid with premium gaps
+   ============================================= */
+
 .dd-grid {
-  --gap: 16px;
+  --gap: 20px;
   --pad: 24px;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: var(--gap);
   padding: var(--pad);
   box-sizing: border-box;
-}
-/* Staggered entrance for cards */
-.dd-grid > .dd-card {
-  opacity: 0;
-  transform: translateY(8px);
-  animation: dd-fade-up 500ms ease forwards;
-}
-.dd-grid > .dd-card:nth-child(1) {
-  animation-delay: 60ms;
-}
-.dd-grid > .dd-card:nth-child(2) {
-  animation-delay: 120ms;
-}
-.dd-grid > .dd-card:nth-child(3) {
-  animation-delay: 180ms;
-}
-.dd-grid > .dd-card:nth-child(4) {
-  animation-delay: 240ms;
-}
-.dd-grid > .dd-card:nth-child(5) {
-  animation-delay: 300ms;
-}
-.dd-grid > .dd-card:nth-child(6) {
-  animation-delay: 360ms;
-}
-.dd-grid > .dd-card:nth-child(7) {
-  animation-delay: 420ms;
-}
-.dd-grid > .dd-card:nth-child(8) {
-  animation-delay: 480ms;
-}
-.dd-grid > .dd-card:nth-child(9) {
-  animation-delay: 540ms;
-}
-.dd-grid > .dd-card:nth-child(10) {
-  animation-delay: 600ms;
-}
-@keyframes dd-fade-up {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  position: relative;
 }
 
 @media (max-width: 1279px) {
   .dd-grid {
     grid-template-columns: repeat(8, 1fr);
+    --gap: 16px;
   }
 }
+
 @media (max-width: 767px) {
   .dd-grid {
     grid-template-columns: 1fr;
-    --gap: 12px;
+    --gap: 14px;
     --pad: 16px;
   }
 }
 
-/* Card base (glassy, soft) */
+/* =============================================
+   STAGGERED ENTRANCE ANIMATIONS
+   Cards fade up with cascading delays
+   ============================================= */
+
+.dd-grid > .dd-card {
+  opacity: 0;
+  transform: translateY(24px) scale(0.98);
+  animation: dd-card-entrance 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.dd-grid > .dd-card:nth-child(1) { animation-delay: 80ms; }
+.dd-grid > .dd-card:nth-child(2) { animation-delay: 140ms; }
+.dd-grid > .dd-card:nth-child(3) { animation-delay: 200ms; }
+.dd-grid > .dd-card:nth-child(4) { animation-delay: 260ms; }
+.dd-grid > .dd-card:nth-child(5) { animation-delay: 320ms; }
+.dd-grid > .dd-card:nth-child(6) { animation-delay: 380ms; }
+.dd-grid > .dd-card:nth-child(7) { animation-delay: 440ms; }
+.dd-grid > .dd-card:nth-child(8) { animation-delay: 500ms; }
+.dd-grid > .dd-card:nth-child(9) { animation-delay: 560ms; }
+.dd-grid > .dd-card:nth-child(10) { animation-delay: 620ms; }
+.dd-grid > .dd-card:nth-child(11) { animation-delay: 680ms; }
+.dd-grid > .dd-card:nth-child(12) { animation-delay: 740ms; }
+
+@keyframes dd-card-entrance {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =============================================
+   GLASSMORPHISM CARD BASE
+   Frosted glass with premium depth
+   ============================================= */
+
 .dd-card {
-  background: #f8fafc; /* light slate */
-  border: 1px solid #cbd5e1; /* darker of bg */
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
-  border-radius: 18px; /* more rounded */
-  padding: 16px;
-  min-width: 0; /* prevent overflow of grid cell */
-  transform: translateY(0);
-  transition: box-shadow 220ms ease, transform 220ms ease;
+  position: relative;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow:
+    0 4px 24px rgba(15, 23, 42, 0.06),
+    0 1px 4px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  min-width: 0;
+  overflow: hidden;
+  transition:
+    transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+    border-color 0.3s ease;
 }
+
+/* Top highlight line */
+.dd-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent);
+}
+
+/* Neon glow border on hover */
+.dd-card::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg,
+    var(--dd-primary-500),
+    var(--dd-lavender-500),
+    var(--dd-accent-500),
+    var(--dd-lavender-500),
+    var(--dd-primary-500));
+  background-size: 300% 300%;
+  border-radius: 26px;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 0.4s ease;
+  animation: dd-neon-rotate 6s linear infinite paused;
+}
+
 .dd-card:hover {
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow:
+    0 16px 48px rgba(59, 130, 246, 0.12),
+    0 8px 24px rgba(139, 92, 246, 0.08),
+    0 2px 8px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border-color: rgba(139, 92, 246, 0.3);
 }
-/* Show focus ring only on focused interactive elements (keyboard), not the whole card */
-/* Removed global green focus outline to avoid distracting border when clicking labels/inputs inside cards. */
-.dd-card *:focus-visible {
-  outline: none; /* user requested removal */
+
+.dd-card:hover::after {
+  opacity: 0.6;
+  animation-play-state: running;
 }
+
+@keyframes dd-neon-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Dark mode cards */
+[data-theme="dark"] .dd-card {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.2),
+    0 1px 4px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .dd-card::before {
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent);
+}
+
+[data-theme="dark"] .dd-card:hover {
+  box-shadow:
+    0 16px 48px rgba(59, 130, 246, 0.15),
+    0 8px 24px rgba(139, 92, 246, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* =============================================
+   CARD HEADER
+   ============================================= */
+
 .dd-card__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+  gap: 12px;
 }
+
 .dd-card__title {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg,
+    var(--dd-primary-600) 0%,
+    var(--dd-lavender-500) 50%,
+    var(--dd-accent-500) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: dd-title-gradient 8s ease-in-out infinite;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
+
+/* 3D extrusion on hover */
+.dd-card__title:hover {
+  transform: translateY(-1px);
+  text-shadow:
+    1px 1px 0 rgba(30, 58, 138, 0.08),
+    2px 2px 0 rgba(30, 58, 138, 0.05),
+    3px 3px 0 rgba(30, 58, 138, 0.02);
+}
+
+@keyframes dd-title-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 .dd-card__subtitle {
-  color: #64748b;
+  color: var(--dd-text-muted);
   font-size: 12px;
+  font-weight: 500;
+  margin-top: 2px;
 }
+
 .dd-card__actions {
   display: flex;
   gap: 8px;
   align-items: center;
 }
+
 .dd-card__menu {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
-  border: none;
-  font-size: 18px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 16px;
   cursor: pointer;
-  padding: 4px 6px;
+  color: var(--dd-text-muted);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
+
+.dd-card__menu:hover {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.15);
+  color: var(--dd-primary-500);
+  transform: scale(1.1);
+}
+
 .dd-card__body {
   display: block;
   min-width: 0;
-  overflow: hidden; /* contain wide children */
+  overflow: hidden;
 }
 
-/* Soft color variants (light bg + slightly darker border) */
-.dd-card--blue {
-  background: #eff6ff;
-  border-color: #60a5fa; /* bright blue */
-  border-width: 2px;
-}
-.dd-card--emerald {
-  background: #ecfdf5;
-  border-color: #34d399; /* bright emerald */
-  border-width: 2px;
-}
-.dd-card--amber {
-  background: #fffbeb;
-  border-color: #fbbf24; /* bright amber */
-  border-width: 2px;
-}
-.dd-card--rose {
-  background: #fdf2f8;
-  border-color: #fb7185; /* bright rose */
-  border-width: 2px;
-}
-.dd-card--violet {
-  background: #f5f3ff;
-  border-color: #a78bfa; /* bright violet */
-  border-width: 2px;
-}
-.dd-card--slate {
-  background: #f8fafc;
-  border-color: #94a3b8; /* bright slate */
-  border-width: 2px;
-}
 .dd-card__footer {
-  margin-top: 8px;
-  color: #475569;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(203, 213, 225, 0.3);
+  color: var(--dd-text-muted);
   font-size: 12px;
 }
 
-/* Column span helpers */
-.col-span-3 {
-  grid-column: span 3;
-}
-.col-span-4 {
-  grid-column: span 4;
-}
-.col-span-5 {
-  grid-column: span 5;
-}
-.col-span-6 {
-  grid-column: span 6;
-}
-.col-span-7 {
-  grid-column: span 7;
-}
-.col-span-8 {
-  grid-column: span 8;
-}
-.col-span-12 {
-  grid-column: span 12;
+/* =============================================
+   COLOR VARIANTS
+   Gradient tinted glassmorphism
+   ============================================= */
+
+.dd-card--blue {
+  background: linear-gradient(135deg,
+    rgba(219, 234, 254, 0.8) 0%,
+    rgba(191, 219, 254, 0.6) 100%);
+  border-color: rgba(96, 165, 250, 0.4);
 }
 
+.dd-card--blue::after {
+  background: linear-gradient(135deg, #3B82F6, #60A5FA, #93C5FD, #60A5FA, #3B82F6);
+  background-size: 300% 300%;
+}
+
+.dd-card--emerald {
+  background: linear-gradient(135deg,
+    rgba(209, 250, 229, 0.8) 0%,
+    rgba(167, 243, 208, 0.6) 100%);
+  border-color: rgba(52, 211, 153, 0.4);
+}
+
+.dd-card--emerald::after {
+  background: linear-gradient(135deg, #10B981, #34D399, #6EE7B7, #34D399, #10B981);
+  background-size: 300% 300%;
+}
+
+.dd-card--amber {
+  background: linear-gradient(135deg,
+    rgba(254, 243, 199, 0.8) 0%,
+    rgba(253, 230, 138, 0.6) 100%);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.dd-card--amber::after {
+  background: linear-gradient(135deg, #F59E0B, #FBBF24, #FCD34D, #FBBF24, #F59E0B);
+  background-size: 300% 300%;
+}
+
+.dd-card--rose {
+  background: linear-gradient(135deg,
+    rgba(254, 226, 226, 0.8) 0%,
+    rgba(254, 202, 202, 0.6) 100%);
+  border-color: rgba(251, 113, 133, 0.4);
+}
+
+.dd-card--rose::after {
+  background: linear-gradient(135deg, #F43F5E, #FB7185, #FDA4AF, #FB7185, #F43F5E);
+  background-size: 300% 300%;
+}
+
+.dd-card--violet {
+  background: linear-gradient(135deg,
+    rgba(237, 233, 254, 0.8) 0%,
+    rgba(221, 214, 254, 0.6) 100%);
+  border-color: rgba(167, 139, 250, 0.4);
+}
+
+.dd-card--violet::after {
+  background: linear-gradient(135deg, #8B5CF6, #A78BFA, #C4B5FD, #A78BFA, #8B5CF6);
+  background-size: 300% 300%;
+}
+
+.dd-card--slate {
+  background: linear-gradient(135deg,
+    rgba(248, 250, 252, 0.9) 0%,
+    rgba(241, 245, 249, 0.7) 100%);
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+.dd-card--slate::after {
+  background: linear-gradient(135deg, #64748B, #94A3B8, #CBD5E1, #94A3B8, #64748B);
+  background-size: 300% 300%;
+}
+
+/* Dark mode color variants */
+[data-theme="dark"] .dd-card--blue {
+  background: linear-gradient(135deg,
+    rgba(30, 58, 138, 0.4) 0%,
+    rgba(59, 130, 246, 0.2) 100%);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="dark"] .dd-card--emerald {
+  background: linear-gradient(135deg,
+    rgba(6, 78, 59, 0.4) 0%,
+    rgba(16, 185, 129, 0.2) 100%);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .dd-card--amber {
+  background: linear-gradient(135deg,
+    rgba(120, 53, 15, 0.4) 0%,
+    rgba(245, 158, 11, 0.2) 100%);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+[data-theme="dark"] .dd-card--rose {
+  background: linear-gradient(135deg,
+    rgba(127, 29, 29, 0.4) 0%,
+    rgba(244, 63, 94, 0.2) 100%);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+[data-theme="dark"] .dd-card--violet {
+  background: linear-gradient(135deg,
+    rgba(91, 33, 182, 0.4) 0%,
+    rgba(139, 92, 246, 0.2) 100%);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+[data-theme="dark"] .dd-card--slate {
+  background: linear-gradient(135deg,
+    rgba(51, 65, 85, 0.5) 0%,
+    rgba(71, 85, 105, 0.3) 100%);
+  border-color: rgba(100, 116, 139, 0.3);
+}
+
+/* =============================================
+   COLUMN SPAN UTILITIES
+   ============================================= */
+
+.col-span-1 { grid-column: span 1; }
+.col-span-2 { grid-column: span 2; }
+.col-span-3 { grid-column: span 3; }
+.col-span-4 { grid-column: span 4; }
+.col-span-5 { grid-column: span 5; }
+.col-span-6 { grid-column: span 6; }
+.col-span-7 { grid-column: span 7; }
+.col-span-8 { grid-column: span 8; }
+.col-span-9 { grid-column: span 9; }
+.col-span-10 { grid-column: span 10; }
+.col-span-11 { grid-column: span 11; }
+.col-span-12 { grid-column: span 12; }
+
+/* Responsive column spans */
 @media (max-width: 1279px) {
-  .lg\:col-span-3 {
-    grid-column: span 3;
-  }
-  .lg\:col-span-4 {
-    grid-column: span 4;
-  }
-  .lg\:col-span-5 {
-    grid-column: span 5;
-  }
-  .lg\:col-span-6 {
-    grid-column: span 6;
-  }
-  .lg\:col-span-7 {
-    grid-column: span 7;
-  }
-  .lg\:col-span-8 {
-    grid-column: span 8;
-  }
-}
-@media (max-width: 767px) {
-  .sm\:col-span-12 {
-    grid-column: span 1;
-  }
+  .lg\:col-span-3 { grid-column: span 3; }
+  .lg\:col-span-4 { grid-column: span 4; }
+  .lg\:col-span-5 { grid-column: span 5; }
+  .lg\:col-span-6 { grid-column: span 6; }
+  .lg\:col-span-7 { grid-column: span 7; }
+  .lg\:col-span-8 { grid-column: span 8; }
 }
 
-/* KPI styles */
+@media (max-width: 767px) {
+  .sm\:col-span-12 { grid-column: span 1; }
+  [class*="col-span-"] { grid-column: span 1; }
+}
+
+/* =============================================
+   KPI STYLES
+   Large numbers with gradient text
+   ============================================= */
+
 .kpi {
   display: flex;
   align-items: flex-end;
-  gap: 8px;
-}
-.kpi .value {
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-.kpi .label {
-  color: #64748b;
-  font-size: 12px;
-}
-.spark {
-  height: 32px;
-  width: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(59, 130, 246, 0.25),
-    rgba(16, 185, 129, 0.25)
-  );
-  border-radius: 6px;
-  position: relative;
-  overflow: hidden;
-}
-.spark::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(59, 130, 246, 0.35),
-    transparent
-  );
-  transform: translateX(-100%);
-  animation: slide 2.4s linear infinite;
-}
-@keyframes slide {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  gap: 12px;
 }
 
-/* Accent gradient headers */
-.dd-card__title {
-  background: linear-gradient(90deg, #0ea5e9, #10b981);
+.kpi .value {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  background: linear-gradient(135deg,
+    var(--dd-primary-600) 0%,
+    var(--dd-lavender-500) 50%,
+    var(--dd-primary-500) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+.kpi .label {
+  color: var(--dd-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  padding-bottom: 6px;
+}
+
+/* Sparkline animation bar */
+.spark {
+  height: 40px;
+  width: 100%;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg,
+    rgba(59, 130, 246, 0.15),
+    rgba(139, 92, 246, 0.15),
+    rgba(245, 158, 11, 0.15));
+}
+
+.spark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(59, 130, 246, 0.25) 25%,
+    rgba(139, 92, 246, 0.3) 50%,
+    rgba(245, 158, 11, 0.25) 75%,
+    transparent 100%);
+  animation: dd-spark-flow 4s ease-in-out infinite;
+}
+
+.spark::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent);
+  animation: dd-spark-shimmer 2.5s ease-in-out infinite;
+}
+
+@keyframes dd-spark-flow {
+  0%, 100% {
+    transform: translateX(-20%);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(20%);
+    opacity: 1;
+  }
+}
+
+@keyframes dd-spark-shimmer {
+  0% { left: -50%; }
+  100% { left: 150%; }
+}
+
+/* =============================================
+   INTERACTIVE HOVER STATES
+   Scale and glow on interaction
+   ============================================= */
+
+.dd-card--interactive {
+  cursor: pointer;
+}
+
+.dd-card--interactive:active {
+  transform: translateY(-4px) scale(1.01);
+}
+
+/* Focus visible for accessibility */
+.dd-card:focus-visible {
+  outline: 2px solid var(--dd-primary-500);
+  outline-offset: 4px;
+}
+
+/* =============================================
+   LOADING SKELETON STATES
+   ============================================= */
+
+.dd-card--loading {
+  pointer-events: none;
+}
+
+.dd-card--loading .dd-card__title,
+.dd-card--loading .dd-card__body {
+  background: linear-gradient(90deg,
+    var(--dd-bg-secondary) 0%,
+    var(--dd-bg-tertiary) 50%,
+    var(--dd-bg-secondary) 100%);
+  background-size: 200% 100%;
+  animation: dd-skeleton-pulse 1.5s ease-in-out infinite;
+  color: transparent;
+  border-radius: 8px;
+}
+
+@keyframes dd-skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* =============================================
+   PARALLAX TILT EFFECT
+   Cards respond to mouse position
+   ============================================= */
+
+.dd-card[data-tilt] {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.dd-card[data-tilt]:hover {
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateZ(10px) scale(1.02);
+}
+
+/* =============================================
+   SPARKLE EFFECT FOR HIGH PERFORMANCE
+   ============================================= */
+
+.dd-card--sparkle {
+  position: relative;
+}
+
+.dd-card--sparkle::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  background: var(--dd-accent-500);
+  border-radius: 50%;
+  animation: dd-sparkle-twinkle 2s ease-in-out infinite;
+  box-shadow: 0 0 12px var(--dd-accent-500);
+}
+
+@keyframes dd-sparkle-twinkle {
+  0%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* =============================================
+   REDUCED MOTION PREFERENCES
+   ============================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .dd-grid > .dd-card {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .dd-card:hover {
+    transform: none;
+  }
+
+  .dd-card::after {
+    animation: none;
+  }
+
+  .spark::before,
+  .spark::after {
+    animation: none;
+  }
+
+  .dd-card__title {
+    animation: none;
+  }
 }

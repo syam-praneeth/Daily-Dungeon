@@ -14,9 +14,10 @@ const TimetableSchema = new mongoose.Schema(
     activityName: { type: String, required: true },
     reminderTime: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 TimetableSchema.index({ userId: 1, dayOfWeek: 1 });
 
 module.exports = mongoose.model("Timetable", TimetableSchema);
+

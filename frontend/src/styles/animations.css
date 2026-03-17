@@ -1,0 +1,808 @@
+/* ============================================
+   DAILY DUNGEON - FUTURISTIC ANIMATIONS
+   Premium, buttery-smooth 60fps animations
+   ============================================ */
+
+/* =============================================
+   WAVE BACKGROUND ANIMATIONS
+   Gentle rippling waves for hero sections
+   ============================================= */
+
+.dd-wave-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.dd-wave {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: radial-gradient(ellipse at center,
+    rgba(139, 92, 246, 0.08) 0%,
+    rgba(59, 130, 246, 0.04) 40%,
+    transparent 70%);
+  animation: dd-wave-float 20s ease-in-out infinite;
+  will-change: transform;
+}
+
+.dd-wave:nth-child(2) {
+  animation-delay: -5s;
+  animation-duration: 25s;
+  background: radial-gradient(ellipse at center,
+    rgba(245, 158, 11, 0.06) 0%,
+    rgba(239, 68, 68, 0.03) 40%,
+    transparent 70%);
+}
+
+.dd-wave:nth-child(3) {
+  animation-delay: -10s;
+  animation-duration: 30s;
+  background: radial-gradient(ellipse at center,
+    rgba(59, 130, 246, 0.05) 0%,
+    rgba(139, 92, 246, 0.02) 40%,
+    transparent 70%);
+}
+
+@keyframes dd-wave-float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(2%, 2%) rotate(5deg) scale(1.02);
+  }
+  50% {
+    transform: translate(-1%, 1%) rotate(-3deg) scale(0.98);
+  }
+  75% {
+    transform: translate(1%, -2%) rotate(2deg) scale(1.01);
+  }
+}
+
+/* Scroll-velocity responsive waves */
+.dd-wave-bg[data-scroll-velocity="slow"] .dd-wave {
+  animation-duration: 30s;
+}
+
+.dd-wave-bg[data-scroll-velocity="fast"] .dd-wave {
+  animation-duration: 10s;
+}
+
+/* =============================================
+   GLASSMORPHISM UTILITIES
+   Frosted glass effects with backdrop blur
+   ============================================= */
+
+.dd-glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dd-glass-light {
+  background: rgba(248, 250, 252, 0.8);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.dd-glass-dark {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dd-glass-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 8px 32px rgba(30, 58, 138, 0.08),
+    0 2px 8px rgba(30, 58, 138, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] .dd-glass-card {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* =============================================
+   PARALLAX FLOAT EFFECT
+   Cards that float and parallax on mouse move
+   ============================================= */
+
+.dd-parallax-card {
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+.dd-parallax-card:hover {
+  transform: translateY(-4px) rotateX(2deg) rotateY(-2deg);
+}
+
+.dd-float {
+  animation: dd-subtle-float 6s ease-in-out infinite;
+}
+
+@keyframes dd-subtle-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* =============================================
+   LIQUID PROGRESS BARS
+   Metallic shimmer with particle bursts
+   ============================================= */
+
+.dd-progress-liquid {
+  position: relative;
+  height: 8px;
+  background: linear-gradient(90deg, #e2e8f0, #f1f5f9);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.dd-progress-fill {
+  position: relative;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg,
+    #1E3A8A 0%,
+    #3B82F6 25%,
+    #8B5CF6 50%,
+    #C084FC 75%,
+    #3B82F6 100%);
+  background-size: 200% 100%;
+  animation: dd-shimmer 3s ease-in-out infinite;
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dd-progress-fill::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%);
+  animation: dd-liquid-flow 2s ease-in-out infinite;
+}
+
+.dd-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: 0;
+  width: 20px;
+  height: 200%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent);
+  animation: dd-highlight-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dd-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes dd-liquid-flow {
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes dd-highlight-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.2); }
+}
+
+/* Particle burst on completion */
+.dd-progress-complete {
+  position: relative;
+}
+
+.dd-progress-complete::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  background: #F59E0B;
+  border-radius: 50%;
+  animation: dd-particle-burst 0.6s ease-out forwards;
+  box-shadow:
+    0 0 0 0 rgba(245, 158, 11, 0.8),
+    8px -8px 0 rgba(245, 158, 11, 0.6),
+    -8px -8px 0 rgba(139, 92, 246, 0.6),
+    8px 8px 0 rgba(59, 130, 246, 0.6),
+    -8px 8px 0 rgba(192, 132, 252, 0.6);
+}
+
+@keyframes dd-particle-burst {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+    box-shadow:
+      0 0 0 0 transparent,
+      20px -20px 0 transparent,
+      -20px -20px 0 transparent,
+      20px 20px 0 transparent,
+      -20px 20px 0 transparent;
+  }
+}
+
+/* =============================================
+   NEON GLOW HOVER EFFECTS
+   Cards expand with glowing neon edges
+   ============================================= */
+
+.dd-neon-hover {
+  position: relative;
+  transition:
+    transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.3s ease;
+}
+
+.dd-neon-hover::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg,
+    #3B82F6, #8B5CF6, #F59E0B, #EF4444, #3B82F6);
+  background-size: 300% 300%;
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: dd-gradient-rotate 4s linear infinite paused;
+}
+
+.dd-neon-hover:hover {
+  transform: scale(1.02);
+}
+
+.dd-neon-hover:hover::before {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+@keyframes dd-gradient-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Inner glow pulse */
+.dd-inner-glow:hover {
+  box-shadow:
+    0 8px 32px rgba(59, 130, 246, 0.15),
+    inset 0 0 20px rgba(139, 92, 246, 0.1);
+}
+
+/* =============================================
+   HEARTBEAT PULSE FOR FAB
+   Rhythmic pulse animation
+   ============================================= */
+
+.dd-heartbeat {
+  animation: dd-heartbeat-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dd-heartbeat-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+  }
+  14% {
+    transform: scale(1.08);
+    box-shadow: 0 6px 30px rgba(245, 158, 11, 0.4);
+  }
+  28% {
+    transform: scale(1);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+  }
+  42% {
+    transform: scale(1.05);
+    box-shadow: 0 5px 25px rgba(245, 158, 11, 0.35);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+  }
+}
+
+/* =============================================
+   STAGGERED FADE-IN ANIMATIONS
+   Items fade in with delay
+   ============================================= */
+
+.dd-stagger-item {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: dd-stagger-fade-up 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.dd-stagger-item:nth-child(1) { animation-delay: 0ms; }
+.dd-stagger-item:nth-child(2) { animation-delay: 50ms; }
+.dd-stagger-item:nth-child(3) { animation-delay: 100ms; }
+.dd-stagger-item:nth-child(4) { animation-delay: 150ms; }
+.dd-stagger-item:nth-child(5) { animation-delay: 200ms; }
+.dd-stagger-item:nth-child(6) { animation-delay: 250ms; }
+.dd-stagger-item:nth-child(7) { animation-delay: 300ms; }
+.dd-stagger-item:nth-child(8) { animation-delay: 350ms; }
+.dd-stagger-item:nth-child(9) { animation-delay: 400ms; }
+.dd-stagger-item:nth-child(10) { animation-delay: 450ms; }
+
+@keyframes dd-stagger-fade-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =============================================
+   PAGE TRANSITIONS
+   Shared element morphing
+   ============================================= */
+
+.dd-page-enter {
+  animation: dd-page-fade-in 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.dd-page-exit {
+  animation: dd-page-fade-out 0.2s ease forwards;
+}
+
+@keyframes dd-page-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dd-page-fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+/* Icon scale and fade transition */
+.dd-morph-icon {
+  transition:
+    transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 0.2s ease;
+}
+
+.dd-morph-icon:hover {
+  transform: scale(1.15);
+}
+
+/* =============================================
+   CONFETTI EXPLOSION
+   Celebration particles
+   ============================================= */
+
+.dd-confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.dd-confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  animation: dd-confetti-fall 3s ease-out forwards;
+}
+
+.dd-confetti:nth-child(odd) {
+  background: linear-gradient(135deg, #F59E0B, #EF4444);
+  border-radius: 50%;
+}
+
+.dd-confetti:nth-child(even) {
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  border-radius: 2px;
+}
+
+@keyframes dd-confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* =============================================
+   SPARKLE EFFECTS
+   Subtle sparkles on high-performance days
+   ============================================= */
+
+.dd-sparkle {
+  position: relative;
+}
+
+.dd-sparkle::before,
+.dd-sparkle::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #F59E0B;
+  border-radius: 50%;
+  animation: dd-sparkle-twinkle 2s ease-in-out infinite;
+}
+
+.dd-sparkle::before {
+  top: 10%;
+  right: 10%;
+  animation-delay: 0s;
+}
+
+.dd-sparkle::after {
+  bottom: 15%;
+  left: 15%;
+  animation-delay: 1s;
+}
+
+@keyframes dd-sparkle-twinkle {
+  0%, 100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 8px #F59E0B;
+  }
+}
+
+/* =============================================
+   THEME SWITCH RIPPLE
+   Full-page ripple transition
+   ============================================= */
+
+.dd-theme-ripple {
+  position: fixed;
+  border-radius: 50%;
+  transform: scale(0);
+  pointer-events: none;
+  z-index: 10000;
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dd-theme-ripple.active {
+  transform: scale(1);
+}
+
+.dd-theme-ripple.to-dark {
+  background: #0F172A;
+}
+
+.dd-theme-ripple.to-light {
+  background: #F8FAFC;
+}
+
+/* =============================================
+   RADIAL MENU ANIMATION
+   Bottom nav morphs to radial
+   ============================================= */
+
+.dd-radial-menu {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.dd-radial-trigger {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  box-shadow: 0 4px 20px rgba(30, 58, 138, 0.3);
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dd-radial-trigger:hover {
+  transform: scale(1.1);
+}
+
+.dd-radial-items {
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dd-radial-menu.open .dd-radial-items {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dd-radial-item {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: scale(0) translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dd-radial-menu.open .dd-radial-item:nth-child(1) {
+  transform: scale(1) translateY(0);
+  transition-delay: 0ms;
+}
+.dd-radial-menu.open .dd-radial-item:nth-child(2) {
+  transform: scale(1) translateY(0);
+  transition-delay: 50ms;
+}
+.dd-radial-menu.open .dd-radial-item:nth-child(3) {
+  transform: scale(1) translateY(0);
+  transition-delay: 100ms;
+}
+.dd-radial-menu.open .dd-radial-item:nth-child(4) {
+  transform: scale(1) translateY(0);
+  transition-delay: 150ms;
+}
+
+/* =============================================
+   3D TEXT EXTRUSION
+   Bold headings with subtle 3D shadow
+   ============================================= */
+
+.dd-3d-text {
+  text-shadow:
+    1px 1px 0 rgba(30, 58, 138, 0.1),
+    2px 2px 0 rgba(30, 58, 138, 0.08),
+    3px 3px 0 rgba(30, 58, 138, 0.05);
+  transition: text-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.dd-3d-text:hover {
+  text-shadow:
+    2px 2px 0 rgba(30, 58, 138, 0.15),
+    4px 4px 0 rgba(30, 58, 138, 0.1),
+    6px 6px 0 rgba(30, 58, 138, 0.05);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .dd-3d-text {
+  text-shadow:
+    1px 1px 0 rgba(0, 0, 0, 0.3),
+    2px 2px 0 rgba(0, 0, 0, 0.2),
+    3px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* =============================================
+   ACCORDION ORIGAMI UNFOLD
+   Collapsible sections that unfold
+   ============================================= */
+
+.dd-accordion-content {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: rotateX(-10deg);
+  transform-origin: top center;
+  transition:
+    max-height 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 0.3s ease,
+    transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dd-accordion.open .dd-accordion-content {
+  max-height: 500px;
+  opacity: 1;
+  transform: rotateX(0deg);
+}
+
+.dd-accordion-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.dd-accordion-trigger:hover {
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.dd-accordion-icon {
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dd-accordion.open .dd-accordion-icon {
+  transform: rotate(180deg);
+}
+
+/* =============================================
+   SMOOTH SCROLLBAR
+   Custom styled scrollbar
+   ============================================= */
+
+.dd-smooth-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.3) transparent;
+}
+
+.dd-smooth-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dd-smooth-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dd-smooth-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3B82F6, #8B5CF6);
+  border-radius: 999px;
+}
+
+.dd-smooth-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #2563EB, #7C3AED);
+}
+
+/* =============================================
+   LOADING STATES
+   Premium skeleton loaders
+   ============================================= */
+
+.dd-skeleton {
+  background: linear-gradient(90deg,
+    #e2e8f0 0%,
+    #f1f5f9 50%,
+    #e2e8f0 100%);
+  background-size: 200% 100%;
+  animation: dd-skeleton-pulse 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+[data-theme="dark"] .dd-skeleton {
+  background: linear-gradient(90deg,
+    #1e293b 0%,
+    #334155 50%,
+    #1e293b 100%);
+  background-size: 200% 100%;
+}
+
+@keyframes dd-skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* =============================================
+   UTILITY ANIMATIONS
+   General purpose animations
+   ============================================= */
+
+.dd-pulse {
+  animation: dd-gentle-pulse 2s ease-in-out infinite;
+}
+
+@keyframes dd-gentle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.dd-bounce {
+  animation: dd-soft-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes dd-soft-bounce {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.dd-shake {
+  animation: dd-gentle-shake 0.5s ease-in-out;
+}
+
+@keyframes dd-gentle-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+}
+
+.dd-spin {
+  animation: dd-smooth-spin 1s linear infinite;
+}
+
+@keyframes dd-smooth-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

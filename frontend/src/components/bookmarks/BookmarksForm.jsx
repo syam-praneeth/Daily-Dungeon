@@ -3,14 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-// Modern friendly palette
-const palette = {
-  primary: "#4f46e5",
-  accent: "#06b6d4",
-  border: "#e6eef8",
-  inputBg: "#ffffff",
-};
-
 const urlSchema = z
   .string()
   .min(1, "URL is required")
@@ -39,7 +31,6 @@ export default function BookmarksForm({
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    setValue,
   } = useForm({
     resolver: zodResolver(BookmarkSchema),
     defaultValues,
@@ -51,100 +42,111 @@ export default function BookmarksForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(submit)} style={{ display: "grid", gap: 10 }}>
-      <div>
-        <label
-          htmlFor="bm-name"
-          style={{
-            display: "block",
-            fontSize: 13,
-            marginBottom: 6,
-            color: "#0f172a",
-          }}
-        >
-          Name
-        </label>
+    <form onSubmit={handleSubmit(submit)} className="bookmark-form">
+      <label htmlFor="bm-name">
+        Name
         <input
           id="bm-name"
           {...register("name")}
           aria-invalid={errors.name ? "true" : "false"}
           placeholder="e.g. MDN Web Docs"
-          style={{
-            width: "100%",
-            padding: "10px 12px",
-            borderRadius: 10,
-            border: `1px solid ${palette.border}`,
-            background: palette.inputBg,
-          }}
         />
-        {errors.name && (
-          <div role="alert" style={{ color: "#dc2626", fontSize: 13 }}>
-            {errors.name.message}
-          </div>
-        )}
-      </div>
+      </label>
+      {errors.name && <p role="alert">{errors.name.message}</p>}
 
-      <div>
-        <label
-          htmlFor="bm-url"
-          style={{
-            display: "block",
-            fontSize: 13,
-            marginBottom: 6,
-            color: "#0f172a",
-          }}
-        >
-          URL
-        </label>
+      <label htmlFor="bm-url">
+        URL
         <input
           id="bm-url"
           {...register("url")}
           aria-invalid={errors.url ? "true" : "false"}
-          placeholder="https://example.com or example.com"
-          style={{
-            width: "100%",
-            padding: "10px 12px",
-            borderRadius: 10,
-            border: `1px solid ${palette.border}`,
-            background: palette.inputBg,
-          }}
+          placeholder="https://example.com"
         />
-        {errors.url && (
-          <div role="alert" style={{ color: "#dc2626", fontSize: 13 }}>
-            {errors.url.message}
-          </div>
-        )}
-      </div>
+      </label>
+      {errors.url && <p role="alert">{errors.url.message}</p>}
 
-      <div style={{ display: "flex", gap: 10 }}>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          style={{
-            padding: "10px 14px",
-            borderRadius: 10,
-            background: palette.primary,
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
+      <div className="bookmark-form__actions">
+        <button type="submit" disabled={isSubmitting}>
           {submitLabel}
         </button>
-        <button
-          type="button"
-          onClick={() => reset()}
-          style={{
-            padding: "10px 14px",
-            borderRadius: 10,
-            border: `1px solid ${palette.border}`,
-            background: "white",
-            cursor: "pointer",
-          }}
-        >
+        <button type="button" onClick={() => reset()} className="ghost">
           Reset
         </button>
       </div>
+
+      <style>{`
+        .bookmark-form {
+          display: grid;
+          gap: 10px;
+        }
+
+        .bookmark-form label {
+          display: grid;
+          gap: 6px;
+          font-size: 12px;
+          font-weight: 700;
+          color: #334155;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+        }
+
+        .bookmark-form input {
+          min-height: 42px;
+          border-radius: 10px;
+          border: 2px solid rgba(203, 213, 225, 0.75);
+          background: rgba(255, 255, 255, 0.9);
+          color: #0f172a;
+          padding: 10px 12px;
+          font: inherit;
+          box-sizing: border-box;
+        }
+
+        .bookmark-form input:focus {
+          outline: none;
+          border-color: #0284c7;
+          box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.2);
+        }
+
+        .bookmark-form p {
+          margin: -2px 0 0;
+          color: #dc2626;
+          font-size: 12px;
+        }
+
+        .bookmark-form__actions {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        .bookmark-form__actions button {
+          min-height: 40px;
+          border-radius: 10px;
+          border: none;
+          background: linear-gradient(130deg, #0ea5e9, #2563eb);
+          color: #fff;
+          font-size: 13px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .bookmark-form__actions .ghost {
+          border: 1px solid rgba(148, 163, 184, 0.55);
+          background: rgba(255, 255, 255, 0.9);
+          color: #334155;
+        }
+
+        [data-theme="dark"] .bookmark-form label {
+          color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .bookmark-form input,
+        [data-theme="dark"] .bookmark-form__actions .ghost {
+          background: rgba(15, 23, 42, 0.88);
+          color: #e2e8f0;
+          border-color: rgba(71, 85, 105, 0.75);
+        }
+      `}</style>
     </form>
   );
 }

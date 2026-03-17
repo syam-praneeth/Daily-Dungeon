@@ -23,9 +23,10 @@ const DailyTaskSchema = new mongoose.Schema(
     },
     reminderTime: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 DailyTaskSchema.index({ userId: 1, dueDate: 1 });
 
 module.exports = mongoose.model("DailyTask", DailyTaskSchema);
+

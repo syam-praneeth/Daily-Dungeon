@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema(
     lastSeen: { type: Date, default: null },
     preferences: { type: Object, default: {} },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 UserSchema.pre("save", async function (next) {
@@ -25,3 +25,4 @@ UserSchema.methods.comparePassword = function (candidatePassword) {
 UserSchema.index({ email: 1 });
 
 module.exports = mongoose.model("User", UserSchema);
+

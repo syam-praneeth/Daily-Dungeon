@@ -14,9 +14,10 @@ const ReadingSessionSchema = new mongoose.Schema(
     duration: { type: Number, required: true }, // in seconds
     date: { type: Date, required: true, index: true },
   },
-  { timestamps: true }
+  { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 ReadingSessionSchema.index({ userId: 1, date: 1 });
 
 module.exports = mongoose.model("ReadingSession", ReadingSessionSchema);
+
