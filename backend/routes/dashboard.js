@@ -20,6 +20,7 @@ router.get("/", auth, async (req, res) => {
     // Tasks
     const tasksToday = await DailyTask.find({
       userId,
+      isDeleted: { $ne: true },
       dueDate: { $gte: today, $lt: tomorrow },
     }).sort({ dueDate: 1 });
 

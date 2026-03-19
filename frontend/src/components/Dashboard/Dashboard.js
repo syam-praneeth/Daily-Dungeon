@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from "react";
+import React, { useContext, useState, useCallback, useEffect } from "react";
 import Quote from "./Quote";
 import ReadingHeatmap from "./ReadingHeatmap";
 import TimetableOverview from "./TimetableOverview";
@@ -87,8 +87,8 @@ const Icons = {
 };
 
 const Dashboard = () => {
-  const { tasks } = useContext(TaskContext);
-  const { readingToday, sessionsToday } = useContext(TimerContext);
+  const { tasks, fetchTasks } = useContext(TaskContext);
+  const { readingToday, sessionsToday, fetchToday } = useContext(TimerContext);
   const { journals } = useContext(JournalContext);
   const { entries } = useContext(TimetableContext);
   const { settings, setFocusGoal, toggleTheme } = useSettings();
@@ -104,9 +104,7 @@ const Dashboard = () => {
   const isSameDayIST = (d) =>
     new Date(d).toLocaleDateString("en-CA", { timeZone: tz }) === todayStr;
 
-  const pendingToday = (tasks || []).filter(
-    (t) => t.status !== "completed" && (!t.dueDate || isSameDayIST(t.dueDate))
-  ).length;
+  const pendingToday = (tasks || []).filter((t) => t.status !== "completed").length;
   const completedCount = (tasks || []).filter(
     (t) => t.status === "completed"
   ).length;
@@ -144,6 +142,29 @@ const Dashboard = () => {
     { value: 120, label: "2 hours" },
     { value: 180, label: "3 hours" },
   ];
+
+  useEffect(() => {
+    const refresh = () => {
+      fetchTasks?.();
+      fetchToday?.();
+    };
+
+    refresh();
+    const intervalId = setInterval(refresh, 45000);
+    const onFocus = () => refresh();
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [fetchTasks, fetchToday]);
 
   return (
     <WaveBackground>

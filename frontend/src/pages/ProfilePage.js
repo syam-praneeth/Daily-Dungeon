@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import { TimerContext } from "../context/TimerContext";
@@ -144,8 +145,9 @@ function AnimatedTrendGraph({
 }
 
 const ProfilePage = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const { streak, fetchStreak } = useContext(TimerContext);
+  const navigate = useNavigate();
 
   const [recentSessions, setRecentSessions] = useState([]);
   const [activeRange, setActiveRange] = useState("week");
@@ -158,6 +160,7 @@ const ProfilePage = () => {
   const [links, setLinks] = useState({});
   const [linksOpen, setLinksOpen] = useState(false);
   const [linksLoading, setLinksLoading] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const [toast, setToast] = useState({ open: false, msg: "" });
 
   useEffect(() => {
@@ -192,6 +195,27 @@ const ProfilePage = () => {
   const save = (e) => {
     e.preventDefault();
     alert("Profile saved (mock).");
+  };
+
+  const handleDeleteAccount = async () => {
+    const ok = window.confirm(
+      "Delete your account? This hides your account and your tasks from your dashboard."
+    );
+    if (!ok) return;
+
+    try {
+      setDeletingAccount(true);
+      await axios.delete("/auth/me");
+      logout();
+      navigate("/login", { replace: true });
+    } catch (e) {
+      setToast({
+        open: true,
+        msg: e?.response?.data?.msg || "Failed to delete account",
+      });
+    } finally {
+      setDeletingAccount(false);
+    }
   };
 
   const activeSet = useMemo(() => {
@@ -400,6 +424,20 @@ const ProfilePage = () => {
             </label>
             <button type="submit">Save Profile</button>
           </form>
+          <div className="profile-danger-zone">
+            <p>
+              Need to leave? You can delete your account. Deleted data is kept
+              for admin audit.
+            </p>
+            <button
+              type="button"
+              className="profile-danger-btn"
+              onClick={handleDeleteAccount}
+              disabled={deletingAccount}
+            >
+              {deletingAccount ? "Deleting..." : "Delete Account"}
+            </button>
+          </div>
         </article>
       </section>
 
@@ -673,6 +711,36 @@ const ProfilePage = () => {
           min-height: 38px;
         }
 
+        .profile-danger-zone {
+          margin-top: 12px;
+          border: 1px solid rgba(239, 68, 68, 0.3);
+          border-radius: 12px;
+          padding: 10px;
+          background: rgba(254, 242, 242, 0.8);
+        }
+
+        .profile-danger-zone p {
+          margin: 0 0 8px;
+          font-size: 13px;
+          color: #7f1d1d;
+        }
+
+        .profile-danger-btn {
+          min-height: 38px;
+          border: none;
+          border-radius: 10px;
+          background: linear-gradient(130deg, #dc2626, #b91c1c);
+          color: white;
+          font-weight: 700;
+          padding: 0 14px;
+          cursor: pointer;
+        }
+
+        .profile-danger-btn:disabled {
+          opacity: 0.65;
+          cursor: not-allowed;
+        }
+
         @keyframes dd-profile-line {
           to {
             stroke-dashoffset: 0;
@@ -728,6 +796,15 @@ const ProfilePage = () => {
           background: rgba(15, 23, 42, 0.9);
           color: #e2e8f0;
           border-color: rgba(71, 85, 105, 0.72);
+        }
+
+        [data-theme="dark"] .profile-danger-zone {
+          background: rgba(127, 29, 29, 0.22);
+          border-color: rgba(248, 113, 113, 0.36);
+        }
+
+        [data-theme="dark"] .profile-danger-zone p {
+          color: #fecaca;
         }
 
         @media (max-width: 920px) {

@@ -93,6 +93,7 @@ app.use("/api", require("./routes/users"));
 app.use("/api", require("./routes/cp"));
 app.use("/api", require("./routes/contests"));
 app.use("/api", require("./routes/links"));
+app.use("/api/admin", require("./routes/admin"));
 // Chat route removed
 app.use("/api/bookmarks", require("./routes/bookmarks"));
 

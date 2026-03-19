@@ -174,6 +174,9 @@ const NavBar = () => {
     { path: "/bookmarks", icon: Icons.Bookmarks, label: "Bookmarks" },
     { path: "/journal", icon: Icons.Journal, label: "Journal" },
     { path: "/timetable", icon: Icons.Timetable, label: "Schedule" },
+    ...(user?.isAdmin
+      ? [{ path: "/admin/deletions", icon: Icons.Shield, label: "Admin" }]
+      : []),
   ];
 
   return (

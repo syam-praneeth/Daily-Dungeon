@@ -22,11 +22,19 @@ const DailyTaskSchema = new mongoose.Schema(
       default: "pending",
     },
     reminderTime: { type: Date },
+    isDeleted: { type: Boolean, default: false, index: true },
+    deletedAt: { type: Date, default: null },
+    deletedByUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 );
 
 DailyTaskSchema.index({ userId: 1, dueDate: 1 });
+DailyTaskSchema.index({ userId: 1, isDeleted: 1, dueDate: 1 });
 
 module.exports = mongoose.model("DailyTask", DailyTaskSchema);
 

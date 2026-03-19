@@ -8,6 +8,8 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true }, // hashed
     lastSeen: { type: Date, default: null },
     preferences: { type: Object, default: {} },
+    isDeleted: { type: Boolean, default: false, index: true },
+    deletedAt: { type: Date, default: null },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 );

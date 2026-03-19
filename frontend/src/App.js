@@ -20,6 +20,7 @@ const JournalPage = lazy(() => import("./pages/JournalPage"));
 const TimetablePage = lazy(() => import("./pages/TimetablePage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const BookmarksPage = lazy(() => import("./pages/BookmarksPage"));
+const AdminDeletionsPage = lazy(() => import("./pages/AdminDeletionsPage"));
 
 function App() {
   return (
@@ -63,6 +64,10 @@ function App() {
                               element={<BookmarksPage />}
                             />
                             <Route path="/profile" element={<ProfilePage />} />
+                            <Route
+                              path="/admin/deletions"
+                              element={<AdminDeletionsPage />}
+                            />
                           </Route>
                         </Routes>
                       </Suspense>

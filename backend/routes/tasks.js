@@ -22,7 +22,7 @@ function toDateOrUndefined(val) {
 // Get all tasks for user
 router.get("/", auth, async (req, res) => {
   try {
-    const tasks = await Task.find({ userId: req.user.id });
+    const tasks = await Task.find({ userId: req.user.id, isDeleted: { $ne: true } });
     res.json(tasks);
   } catch (err) {
     console.error("GET /api/tasks error:", err);
@@ -91,7 +91,7 @@ router.put("/:id", auth, async (req, res) => {
     }
 
     const task = await Task.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user.id },
+      { _id: req.params.id, userId: req.user.id, isDeleted: { $ne: true } },
       update,
       { new: true, runValidators: true }
     );
@@ -109,10 +109,19 @@ router.put("/:id", auth, async (req, res) => {
 // Delete task
 router.delete("/:id", auth, async (req, res) => {
   try {
-    const result = await Task.findOneAndDelete({
-      _id: req.params.id,
-      userId: req.user.id,
-    });
+    const result = await Task.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        userId: req.user.id,
+        isDeleted: { $ne: true },
+      },
+      {
+        isDeleted: true,
+        deletedAt: new Date(),
+        deletedByUserId: req.user.id,
+      },
+      { new: true }
+    );
     if (!result) return res.status(404).json({ msg: "Task not found" });
     res.json({ msg: "Task deleted" });
   } catch (err) {
