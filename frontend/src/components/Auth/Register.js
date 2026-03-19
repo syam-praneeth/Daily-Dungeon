@@ -1,14 +1,20 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register, authLoading, authError } = useContext(AuthContext);
+  const { register, authLoading, authError, token } = useContext(AuthContext);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
+
+  useEffect(() => {
+    if (token || localStorage.getItem("token")) {
+      navigate("/", { replace: true });
+    }
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

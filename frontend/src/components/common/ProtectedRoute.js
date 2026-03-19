@@ -4,7 +4,8 @@ import { AuthContext } from "../../context/AuthContext";
 
 const ProtectedRoute = () => {
   const { token } = useContext(AuthContext);
-  if (!token) return <Navigate to="/login" replace />;
+  const persistedToken = localStorage.getItem("token");
+  if (!token && !persistedToken) return <Navigate to="/login" replace />;
   return <Outlet />;
 };
 
