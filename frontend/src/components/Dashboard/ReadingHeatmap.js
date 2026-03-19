@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState, useRef } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import CalendarHeatmap from "react-calendar-heatmap";
 import { TimerContext } from "../../context/TimerContext";
@@ -99,6 +99,47 @@ const ReadingHeatmap = () => {
     }));
   }, [dayTotals]);
 
+  const getTipContent = useCallback((value) => {
+    if (!value?.date) return null;
+    const d = new Date(value.date + "T00:00:00");
+    const formatted = d.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      timeZone: "Asia/Kolkata",
+    });
+    const mins = Math.round((Number(value.count) || 0) / 60);
+    const duration = mins > 0 ? `${mins} min focused` : "No activity";
+    let intensity = "None";
+    if (mins > 0 && mins <= 15) intensity = "Light";
+    else if (mins > 15 && mins <= 30) intensity = "Steady";
+    else if (mins > 30 && mins <= 60) intensity = "Strong";
+    else if (mins > 60) intensity = "Peak";
+    return { date: formatted, duration, intensity, key: value.date };
+  }, []);
+
+  const placeTip = useCallback((event, value) => {
+    const content = getTipContent(value);
+    if (!content) return;
+
+    const pad = 14;
+    const tipWidth = 220;
+    const tipHeight = 78;
+    let x = event.clientX + 14;
+    let y = event.clientY + 14;
+
+    if (x + tipWidth > window.innerWidth - pad) {
+      x = event.clientX - tipWidth - 14;
+    }
+    if (y + tipHeight > window.innerHeight - pad) {
+      y = event.clientY - tipHeight - 14;
+    }
+    if (x < pad) x = pad;
+    if (y < pad) y = pad;
+
+    setTip({ x, y, ...content });
+  }, [getTipContent]);
+
   const { totalActive, currentStreak, maxStreak } = useMemo(() => {
     if (!streak || streak.length === 0)
       return { totalActive: 0, currentStreak: 0, maxStreak: 0 };
@@ -190,7 +231,7 @@ const ReadingHeatmap = () => {
       )}
 
       {/* Heatmap */}
-      <div className="dd-heatmap__chart">
+      <div className="dd-heatmap__chart" onMouseLeave={() => setTip(null)}>
         <CalendarHeatmap
           startDate={start}
           endDate={end}
@@ -199,39 +240,41 @@ const ReadingHeatmap = () => {
           showWeekdayLabels={false}
           showMonthLabels={true}
           classForValue={(v) => {
-            if (!v || !v.count) return "dd-hc dd-hc-0";
-            const minutes = (v.count || 0) / 60;
-            if (minutes <= 0) return "dd-hc dd-hc-0";
-            if (minutes <= 15) return "dd-hc dd-hc-1";
-            if (minutes <= 30) return "dd-hc dd-hc-2";
-            if (minutes <= 60) return "dd-hc dd-hc-3";
-            return "dd-hc dd-hc-4";
+            const minutes = (Number(v?.count) || 0) / 60;
+            let level = 0;
+            if (minutes > 0 && minutes <= 15) level = 1;
+            else if (minutes > 15 && minutes <= 30) level = 2;
+            else if (minutes > 30 && minutes <= 60) level = 3;
+            else if (minutes > 60) level = 4;
+            return `dd-hc dd-hc-${level}${level > 0 ? " dd-hc--active" : ""}`;
           }}
           titleForValue={() => null}
           transformDayElement={(el, v) =>
             React.cloneElement(el, {
               onMouseEnter: (e) => {
-                if (!v?.date) return;
-                const x = e.clientX + 12;
-                const y = e.clientY + 12;
-                const d = new Date(v.date + "T00:00:00");
-                const formatted = d.toLocaleDateString("en-US", {
-                  weekday: "short",
-                  month: "short",
-                  day: "numeric",
-                  timeZone: "Asia/Kolkata",
-                });
-                const mins = v?.count ? Math.round((v.count || 0) / 60) : 0;
-                const duration = mins > 0 ? `${mins} min focused` : "No activity";
-                setTip({ x, y, date: formatted, duration });
+                if (el.props.onMouseEnter) el.props.onMouseEnter(e);
+                placeTip(e, v);
               },
               onMouseMove: (e) => {
-                if (!v?.date) return;
-                const x = e.clientX + 12;
-                const y = e.clientY + 12;
-                setTip((prev) => prev ? { ...prev, x, y } : null);
+                if (el.props.onMouseMove) el.props.onMouseMove(e);
+                placeTip(e, v);
               },
-              onMouseLeave: () => setTip(null),
+              onMouseLeave: (e) => {
+                if (el.props.onMouseLeave) el.props.onMouseLeave(e);
+                setTip(null);
+              },
+              onFocus: (e) => {
+                if (el.props.onFocus) el.props.onFocus(e);
+                placeTip(e, v);
+              },
+              onBlur: (e) => {
+                if (el.props.onBlur) el.props.onBlur(e);
+                setTip(null);
+              },
+              tabIndex: 0,
+              "aria-label": v?.date
+                ? `${v.date}: ${Math.round((Number(v?.count) || 0) / 60)} minutes`
+                : "No activity",
             })
           }
         />
@@ -256,16 +299,23 @@ const ReadingHeatmap = () => {
           <div className="dd-heatmap__tooltip" style={{ left: tip.x, top: tip.y }}>
             <div className="dd-heatmap__tooltip-date">{tip.date}</div>
             <div className="dd-heatmap__tooltip-duration">{tip.duration}</div>
+            <div className="dd-heatmap__tooltip-intensity">Intensity: {tip.intensity}</div>
           </div>,
           document.body
         )}
 
       <style>{`
         .dd-heatmap {
+          --dd-heatmap-accent: #06b6d4;
+          --dd-heatmap-accent-2: #22d3ee;
+          --dd-heatmap-accent-soft: rgba(6, 182, 212, 0.18);
+          position: relative;
+          overflow: hidden;
           padding: 20px;
           background: var(--dd-bg-card-solid, #FFFFFF);
-          border: 1px solid var(--dd-border-light, rgba(203, 213, 225, 0.5));
-          border-radius: 16px;
+          border: 1px solid color-mix(in srgb, var(--dd-heatmap-accent) 24%, var(--dd-border-light, rgba(203, 213, 225, 0.55)));
+          border-radius: 18px;
+          box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
         }
 
         .dd-heatmap__header {
@@ -307,6 +357,14 @@ const ReadingHeatmap = () => {
           display: flex;
           align-items: center;
           gap: 10px;
+          padding: 4px 8px;
+          border-radius: 12px;
+          border: 1px solid transparent;
+          transition: border-color 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .dd-heatmap__stat:hover {
+          border-color: #0f172a;
         }
 
         .dd-heatmap__stat-icon {
@@ -369,10 +427,28 @@ const ReadingHeatmap = () => {
 
         .dd-heatmap__chart {
           margin-bottom: 16px;
+          padding: 12px;
+          border-radius: 14px;
+          background: color-mix(in srgb, var(--dd-bg-secondary, #F1F5F9) 90%, white);
+          border: 1px solid color-mix(in srgb, var(--dd-heatmap-accent) 20%, var(--dd-border-light, rgba(203, 213, 225, 0.58)));
         }
 
         .dd-heatmap__chart .react-calendar-heatmap {
           width: 100%;
+        }
+
+        .dd-heatmap__chart .react-calendar-heatmap rect {
+          width: 8px;
+          height: 8px;
+          rx: 2.5;
+          ry: 2.5;
+          transform-box: fill-box;
+          transform-origin: center;
+        }
+
+        .dd-heatmap__chart .react-calendar-heatmap rect:hover {
+          transform: none;
+          filter: none;
         }
 
         .dd-heatmap__chart .react-calendar-heatmap text {
@@ -382,34 +458,43 @@ const ReadingHeatmap = () => {
 
         /* Heatmap cells */
         .dd-hc {
-          rx: 3;
-          ry: 3;
-          transition: all 0.15s ease;
+          rx: 2.5;
+          ry: 2.5;
+          cursor: pointer;
+          stroke: rgba(100, 116, 139, 0.28);
+          stroke-width: 0.7;
+          transition: stroke 0.22s cubic-bezier(0.22, 1, 0.36, 1), stroke-width 0.22s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .dd-hc:hover {
-          stroke: var(--dd-primary-400, #60A5FA);
-          stroke-width: 2;
+        .dd-heatmap__chart .react-calendar-heatmap rect.dd-hc:hover,
+        .dd-heatmap__chart .react-calendar-heatmap rect.dd-hc:focus-visible {
+          stroke: #0f172a;
+          stroke-width: 1.2;
+          outline: none;
+        }
+
+        .dd-hc--active {
+          filter: drop-shadow(0 1px 6px rgba(6, 182, 212, 0.24));
         }
 
         .dd-hc-0 {
-          fill: var(--dd-bg-secondary, #F1F5F9);
+          fill: #dbe4ef;
         }
 
         .dd-hc-1 {
-          fill: rgba(59, 130, 246, 0.25);
+          fill: #bae6fd;
         }
 
         .dd-hc-2 {
-          fill: rgba(59, 130, 246, 0.5);
+          fill: #7dd3fc;
         }
 
         .dd-hc-3 {
-          fill: rgba(59, 130, 246, 0.75);
+          fill: #38bdf8;
         }
 
         .dd-hc-4 {
-          fill: #3B82F6;
+          fill: #0284c7;
         }
 
         /* Legend */
@@ -441,12 +526,15 @@ const ReadingHeatmap = () => {
         .dd-heatmap__tooltip {
           position: fixed;
           z-index: 10000;
-          padding: 10px 14px;
-          background: var(--dd-bg-dark, #0F172A);
-          border-radius: 8px;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+          min-width: 180px;
+          padding: 10px 12px;
+          background: color-mix(in srgb, #020617 84%, #0f172a);
+          border: 1px solid rgba(148, 163, 184, 0.32);
+          border-radius: 10px;
+          box-shadow: 0 18px 40px rgba(2, 6, 23, 0.42);
+          backdrop-filter: blur(6px);
           pointer-events: none;
-          animation: dd-tooltip-fade 0.15s ease;
+          animation: dd-tooltip-fade 0.14s ease;
         }
 
         @keyframes dd-tooltip-fade {
@@ -472,14 +560,53 @@ const ReadingHeatmap = () => {
           color: #94A3B8;
         }
 
+        .dd-heatmap__tooltip-intensity {
+          margin-top: 4px;
+          font-size: 11px;
+          color: #cbd5e1;
+          letter-spacing: 0.01em;
+        }
+
         /* Dark theme */
         [data-theme="dark"] .dd-heatmap {
           background: var(--dd-bg-secondary, #1E293B);
-          border-color: var(--dd-border-medium, #334155);
+          border-color: color-mix(in srgb, var(--dd-heatmap-accent) 28%, var(--dd-border-medium, #334155));
+          box-shadow: 0 16px 34px rgba(2, 6, 23, 0.36);
+        }
+
+        [data-theme="dark"] .dd-heatmap__stat:hover {
+          border-color: #cbd5e1;
+        }
+
+        [data-theme="dark"] .dd-heatmap__chart {
+          background: rgba(15, 23, 42, 0.56);
+          border-color: rgba(56, 189, 248, 0.2);
         }
 
         [data-theme="dark"] .dd-hc-0 {
-          fill: var(--dd-bg-tertiary, #334155);
+          fill: #243447;
+          stroke: rgba(100, 116, 139, 0.32);
+        }
+
+        [data-theme="dark"] .dd-hc-1 {
+          fill: rgba(56, 189, 248, 0.34);
+        }
+
+        [data-theme="dark"] .dd-hc-2 {
+          fill: rgba(56, 189, 248, 0.5);
+        }
+
+        [data-theme="dark"] .dd-hc-3 {
+          fill: rgba(34, 211, 238, 0.72);
+        }
+
+        [data-theme="dark"] .dd-hc-4 {
+          fill: #22d3ee;
+        }
+
+        [data-theme="dark"] .dd-heatmap__chart .react-calendar-heatmap rect.dd-hc:hover,
+        [data-theme="dark"] .dd-heatmap__chart .react-calendar-heatmap rect.dd-hc:focus-visible {
+          stroke: #e2e8f0;
         }
 
         /* Responsive */
@@ -491,6 +618,7 @@ const ReadingHeatmap = () => {
           .dd-heatmap__stats {
             width: 100%;
             justify-content: space-between;
+            gap: 8px;
           }
 
           .dd-heatmap__stat-content {
@@ -500,6 +628,15 @@ const ReadingHeatmap = () => {
           .dd-heatmap__stat-icon {
             width: 42px;
             height: 42px;
+          }
+
+          .dd-heatmap__chart {
+            padding: 8px;
+          }
+
+          .dd-heatmap__chart .react-calendar-heatmap rect {
+            width: 6px;
+            height: 6px;
           }
         }
       `}</style>
